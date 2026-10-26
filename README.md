@@ -1,8 +1,20 @@
 # AI Investigation Engine
 
-> **Project status:** Planning and initial setup. The features described below are the intended implementation, not yet completed or verified.
+> **Project status (27 October 2026):** Initial Git and macOS Python environment setup completed/reported; architecture concepts studied. Application functionality has not been implemented or tested. Features below remain planned.
 
 An evidence-driven AI investigation system designed to search large document collections, connect facts across multiple sources, and answer complex questions with traceable citations. Unlike a basic *chat with documents* application, the goal is to support multi-step investigation, identify conflicting evidence, and acknowledge when available sources cannot justify an answer.
+
+## Current progress (27 October 2026)
+
+| Milestone | Status |
+| --- | --- |
+| Architecture, document/chunk metadata, chunking, embeddings, cosine similarity, Qdrant | Studied conceptually; not implemented |
+| GitHub repository and README | Created |
+| Python environment | Python 3.12.x in `.venv` on Apple Silicon macOS, reported active |
+| PyCharm interpreter and dependency verification | Pending |
+| Dataset, ingestion, hybrid search, RAG, evaluation, deployment | Not started |
+
+**Next:** Verify the PyCharm interpreter, inspect HotpotQA and identify source records, then implement and test ingestion. Mandatory requirements first; learn → implement → test → explain. No application code without explicit request.
 
 ## At a glance
 
@@ -200,7 +212,7 @@ We will compare at least two configurations, potentially **different chunking st
 
 ## Local development on macOS
 
-**Current status:** Environment verification is in progress. The development setup below describes the intended process; it is **not yet a tested installation guide**.
+**Current status:** Git and GitHub are configured. Python 3.12.x in `.venv` has been reported active; PyCharm's interpreter selection and dependencies still require verification. This is not yet a tested installation guide.
 
 Prerequisites:
 
@@ -260,7 +272,7 @@ Retrieval and LLM generation are probabilistic: citations and abstention reduce 
 
 | Deliverable | Status |
 | --- | --- |
-| GitHub repository with code and history | In preparation |
+| GitHub repository and history | Created; application code pending |
 | Public live demo | Pending |
 | README and architecture rationale | Initial draft |
 | Evaluation report with results and analysis | Pending |
@@ -275,6 +287,19 @@ Retrieval and LLM generation are probabilistic: citations and abstention reduce 
 | **3** | Full-scale verification, 40+ question evaluation, deployment, documentation, interview preparation |
 
 This is an aggressive plan. Mandatory requirements take priority over optional enhancements. Integration tests and documentation should be updated continuously rather than deferred entirely to the final day.
+
+## Learning resources and credits
+
+These resources were **recommended during project mentoring**. Their inclusion is not a claim that every video has been watched or that tutorial code was used. Actual AI/tool usage will be documented in the required AI Usage Report.
+
+| Topic | Video | Creator |
+| --- | --- | --- |
+| RAG fundamentals | [What is Retrieval-Augmented Generation (RAG)?](https://www.youtube.com/watch?v=T-D1OfcDW1M) | IBM Technology |
+| Vector cosine similarity | [Cosine Similarity (YouTube search)](https://www.youtube.com/results?search_query=StatQuest+Cosine+Similarity+Clearly+Explained) | StatQuest |
+| Dense/sparse hybrid retrieval | [Implementing Hybrid Search in Qdrant](https://www.youtube.com/watch?v=zaQYa7oa1a8) | Qdrant |
+| Python APIs | [Python FastAPI Tutorial](https://www.youtube.com/watch?v=iukOehU5aF4) | Corey Schafer |
+
+Concepts covered in mentoring: ingestion versus investigation, document IDs and metadata, versioning, fixed-size and semantic chunking, embeddings, cosine similarity, and Qdrant's role. BM25/RRF implementation and evaluation remain ahead.
 
 ## AI assistance disclosure
 
