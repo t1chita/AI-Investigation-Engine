@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "investigator"
+version = "0.1.0"
+description = "AI Investigation Engine: hybrid retrieval and grounded, cited answers over a large document collection."
+readme = "README.md"
+requires-python = ">=3.11"
+# What the server needs. Kept small so the app fits a 512 MB free-tier instance.
+dependencies = [
+    "fastembed>=0.4",
+    "numpy>=1.26",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "pypdf>=5.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+# Local Qdrant (on disk / in memory) for development and tests.
+local = ["qdrant-client>=1.12"]
+# Building the corpus and evaluating: dataset download, the PyTorch embedder for comparison.
+data = ["datasets>=3.0", "sentence-transformers>=3.0", "qdrant-client>=1.12"]
+dev = ["pytest>=8.0", "qdrant-client>=1.12"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+investigator = ["web/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,1 +1,12 @@
 .venv
+.env
+.DS_Store
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Local databases, indexes and generated corpus files (rebuilt by scripts)
+data/*
+!data/.gitkeep
+build/

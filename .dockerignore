@@ -1,0 +1,14 @@
+.venv
+.git
+data
+frontend
+eval
+docs
+tests
+scripts
+deploy
+*.pdf
+__pycache__
+.pytest_cache
+.impeccable
+.env
