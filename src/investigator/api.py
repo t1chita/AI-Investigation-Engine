@@ -9,7 +9,9 @@ fixed order). Searches run concurrently; the search index guards its in-memory B
 That is enough for a single-instance deployment.
 """
 
+import os
 import threading
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -26,6 +28,19 @@ from .parsers import ParseError, parse_file
 
 STATE: dict = {}
 LOCK = threading.RLock()
+PROCESS_START = time.time()
+
+
+def memory_mb() -> float | None:
+    """Current resident memory of this process (Linux: /proc). None where unavailable."""
+    try:
+        with open("/proc/self/status") as f:
+            for line in f:
+                if line.startswith("VmRSS:"):
+                    return round(int(line.split()[1]) / 1024, 1)
+    except OSError:
+        return None
+    return None
 
 
 def init(components: Components | None = None, llm="auto") -> None:
@@ -48,6 +63,7 @@ async def lifespan(app: FastAPI):
     c = STATE["components"]
     # Build the keyword index before the first request.
     c.index.warm_bm25(c.settings.chunk_strategy, getattr(c.settings, "bm25_build_subprocess", False))
+    STATE["startup_seconds"] = round(time.time() - PROCESS_START, 1)
     yield
 
 
@@ -92,6 +108,10 @@ def health():
         "embedding_model": c.index.embedder.model_name,
         "llm": f"{llm.provider}:{llm.model}" if llm else None,
         "llm_error": STATE.get("llm_error"),
+        "memory_mb": memory_mb(),
+        "startup_seconds": STATE.get("startup_seconds"),
+        "uptime_seconds": round(time.time() - PROCESS_START),
+        "commit": (os.getenv("RENDER_GIT_COMMIT") or "")[:7] or None,
     }
 
 

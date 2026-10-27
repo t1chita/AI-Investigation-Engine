@@ -53,12 +53,19 @@ def run_answers(components, rows, limit, pause) -> None:
     bank = evaluation.question_bank(rows)[:limit]
     summaries = {}
     for label, cfg in CONFIGS.items():
+        path = OUT / f"answers_{label}.json"
+        done = json.loads(path.read_text())["rows"] if path.exists() else []
+        if done:
+            print(f"{label}: resuming, {len(done)} questions already done")
         investigator = Investigator(components.index, llm, strategy=cfg["strategy"], mode=cfg["mode"])
-        result = evaluation.evaluate_answers(investigator, bank, label, pause=pause)
+        result = evaluation.evaluate_answers(investigator, bank, label, pause=pause, done_rows=done, save_to=path)
         result["llm"] = f"{llm.provider}:{llm.model}"
-        evaluation.save(result, OUT / f"answers_{label}.json")
+        evaluation.save(result, path)
         summaries[label] = result["summary"]
-        print(label, json.dumps(result["summary"], indent=2))
+        print(label, f"complete={result['complete']}", json.dumps(result["summary"], indent=2))
+        if not result["complete"]:
+            print(f"daily LLM quota used up after {result['n']} of {len(bank)} questions; re-run later to continue")
+            break
     summaries["usage"] = vars(llm.usage)
     (OUT / "answers_summary.json").write_text(json.dumps(summaries, indent=2))
 

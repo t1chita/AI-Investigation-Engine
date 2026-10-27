@@ -205,11 +205,27 @@ def evaluate_retrieval(index, questions: list[EvalQuestion], strategy: str, mode
     return {"strategy": strategy, "mode": mode, "n": len(rows), "summary": summary, "rows": rows}
 
 
-def evaluate_answers(investigator, questions: list[EvalQuestion], label: str, pause: float = 0.0) -> dict:
-    rows = []
+def evaluate_answers(
+    investigator, questions: list[EvalQuestion], label: str, pause: float = 0.0, done_rows: list[dict] | None = None,
+    save_to: Path | None = None,
+) -> dict:
+    """Run the questions end to end. Resumable: questions already in ``done_rows`` are kept, not re-run.
+
+    If the LLM's DAILY quota runs out, the run stops (the unfinished question is not recorded) and
+    returns ``complete: False``; re-running later continues where it stopped. Without this, every
+    remaining question would be recorded as an error and spoil the comparison.
+    """
+    rows = list(done_rows or [])
+    finished = {row["qid"] for row in rows}
+    complete = True
     for q in questions:
+        if q.qid in finished:
+            continue
         start = time.time()
         r = investigator.run(q.question)
+        if r.error.startswith("LLMQuotaExhausted"):
+            complete = False
+            break
         cited_docs = list(dict.fromkeys(e.doc_id for e in r.cited_evidence()))
         retrieved_docs = doc_ranking([e.doc_id for e in r.evidence])
         rows.append({
@@ -233,12 +249,20 @@ def evaluate_answers(investigator, questions: list[EvalQuestion], label: str, pa
             "error": r.error,
             "warnings": r.warnings,
         })
+        if save_to:  # save after every question so nothing is lost if the run is interrupted
+            save({"config": label, "complete": False, "rows": rows}, save_to)
         if pause:
             time.sleep(pause)  # stay under free-tier rate limits
+    order = {q.qid: i for i, q in enumerate(questions)}
+    rows.sort(key=lambda row: order.get(row["qid"], len(order)))
+    return {"config": label, "complete": complete, "n": len(rows), "summary": summarize_answers(rows), "rows": rows}
+
+
+def summarize_answers(rows: list[dict]) -> dict:
     by_cat = defaultdict(list)
     for row in rows:
         by_cat[row["category"]].append(row)
-    summary = {
+    return {
         "answer_correctness": mean(r["correct"] for r in rows),
         "em_answerable": mean(r["em"] for r in rows if r["category"] in ANSWERABLE),
         "f1_answerable": mean(r["f1"] for r in rows if r["category"] in ANSWERABLE),
@@ -249,7 +273,6 @@ def evaluate_answers(investigator, questions: list[EvalQuestion], label: str, pa
         "llm_calls": sum(r["llm_calls"] for r in rows),
         "by_category": {c: mean(r["correct"] for r in rs) for c, rs in by_cat.items()},
     }
-    return {"config": label, "n": len(rows), "summary": summary, "rows": rows}
 
 
 def save(result: dict, path: Path) -> None:
