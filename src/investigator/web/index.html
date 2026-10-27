@@ -162,11 +162,19 @@ document.querySelectorAll("nav button").forEach((b) => b.addEventListener("click
   if (b.dataset.view === "documents" && !$("#list-out").innerHTML) loadList(0);
 }));
 
-async function loadHealth() {
+async function loadHealth(attempt = 1) {
   try {
     const h = await api("GET", "/health");
     $("#health").textContent = `${h.documents.toLocaleString()} documents · ${h.llm || "no LLM"}`;
-  } catch (e) { $("#health").textContent = "Backend not reachable"; }
+  } catch (e) {
+    // A free-tier server that was asleep needs up to about a minute to start; keep trying.
+    if (attempt < 20) {
+      $("#health").textContent = "Starting the server…";
+      setTimeout(() => loadHealth(attempt + 1), 3000);
+    } else {
+      $("#health").textContent = "Backend not reachable";
+    }
+  }
 }
 
 // ---- source viewer (shared) ------------------------------------------------------------------
@@ -213,7 +221,8 @@ function renderResult(r) {
       <button type="button" class="plain" data-src="${esc(e.doc_id)}" data-start="${e.sentence_start}" data-end="${e.sentence_end}">Show in source</button>
       <div class="src-box"></div></div>`;
   }).join("");
-  h += `<details><summary>Investigation trace · ${r.llm_calls} LLM calls</summary><pre>${esc(r.steps.map((s) => JSON.stringify(s)).join("\n"))}</pre>` +
+  if (r.warnings.some((w) => w.includes("fallback model"))) h += msg("info", `Answered with fallback model ${r.llm_model} (main model's daily quota is used up).`);
+  h += `<details><summary>Investigation trace · ${r.llm_calls} LLM calls${r.llm_model ? " · " + esc(r.llm_model) : ""}</summary><pre>${esc(r.steps.map((s) => JSON.stringify(s)).join("\n"))}</pre>` +
        (r.warnings.length ? `<pre>${esc(r.warnings.join("\n"))}</pre>` : "") + "</details>";
   $("#ask-out").innerHTML = h;
 }

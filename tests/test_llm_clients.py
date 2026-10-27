@@ -47,9 +47,31 @@ def test_groq_gives_up_after_max_retries():
 def test_daily_quota_is_not_retried():
     daily = {"error": {"message": "Rate limit reached ... on tokens per day (TPD): Limit 200000, Used 199535"}}
     client, calls = client_with(GroqClient, [(429, daily)])
+    client.models = [client.model]  # no fallback configured
     with pytest.raises(LLMQuotaExhausted, match="daily quota"):
         client.complete_json("s", "u")
     assert len(calls) == 1
+
+
+def test_daily_quota_switches_to_fallback_model_and_stays_there():
+    daily = {"error": {"message": "Rate limit reached on tokens per day (TPD)"}}
+    client, calls = client_with(GroqClient, [(429, daily), (200, GROQ_OK), (200, GROQ_OK)])
+    assert client.models == ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"]
+    assert client.complete_json("s", "u") == {"queries": ["a"]}
+    assert client.model == "openai/gpt-oss-20b"
+    client.complete_json("s", "u")  # next call goes straight to the fallback
+    import json as _json
+    assert [_json.loads(c.content)["model"] for c in calls] == [
+        "openai/gpt-oss-120b", "openai/gpt-oss-20b", "openai/gpt-oss-20b"
+    ]
+
+
+def test_without_fallbacks_daily_quota_is_reported():
+    daily = {"error": {"message": "Rate limit reached on tokens per day (TPD)"}}
+    client, _ = client_with(GroqClient, [(429, daily)])
+    client.models = [client.model]
+    with pytest.raises(LLMQuotaExhausted):
+        client.complete_json("s", "u")
 
 
 def test_retries_stop_at_the_wait_budget(monkeypatch):

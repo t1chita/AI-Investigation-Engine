@@ -120,6 +120,7 @@ class InvestigationResult:
     warnings: list[str] = field(default_factory=list)
     error: str = ""
     llm_calls: int = 0
+    llm_model: str = ""  # the model that produced the answer (may be a fallback)
 
     def cited_evidence(self) -> list[Evidence]:
         used = {e for c in self.claims for e in c.evidence} | {e for c in self.conflicts for e in c.evidence}
@@ -231,6 +232,7 @@ class Investigator:
             return result
 
         calls_before = self.llm.usage.calls if self.llm is not None else 0
+        model_before = getattr(self.llm, "model", "")
         searches = [question]
         if self.llm is not None:
             searches += self._plan(result, question)
@@ -267,6 +269,11 @@ class Investigator:
             result.status = "error"
             result.error = f"{type(exc).__name__}: {exc}"
         result.llm_calls = self.llm.usage.calls - calls_before
+        result.llm_model = getattr(self.llm, "model", "")
+        if model_before and result.llm_model != model_before:
+            result.warnings.append(
+                f"daily quota of {model_before} is used up; answered with fallback model {result.llm_model}"
+            )
         return result
 
     def _plan(self, result: InvestigationResult, question: str) -> list[str]:

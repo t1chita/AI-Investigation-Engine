@@ -126,12 +126,28 @@ class GroqClient(_HTTPClient):
     provider = "groq"
     url = "https://api.groq.com/openai/v1/chat/completions"
 
-    def __init__(self, api_key: str, model: str = "", **kw):
-        # Free-tier key (October 2026): 1,000 requests/day, 8,000 tokens/minute for this model.
+    DEFAULT_FALLBACKS = ("openai/gpt-oss-20b", "qwen/qwen3.8-27b")
+
+    def __init__(self, api_key: str, model: str = "", fallback_models: list[str] | None = None, **kw):
+        # Free-tier key (October 2026), per model: 1,000 requests/day, 8,000 tokens/minute and
+        # 200,000 tokens/day. Each model has its OWN daily quota, so when the main model's daily
+        # quota is used up we continue with the next model in the list (and say so).
         kw.setdefault("max_retries", 6)  # the per-minute token window resets within a minute
         super().__init__(api_key, model or "openai/gpt-oss-120b", **kw)
+        fallbacks = self.DEFAULT_FALLBACKS if fallback_models is None else fallback_models
+        self.models = [self.model] + [m for m in fallbacks if m and m != self.model]
 
     def complete_json(self, system: str, user: str) -> dict:
+        while True:
+            try:
+                return self._complete(system, user)
+            except LLMQuotaExhausted:
+                position = self.models.index(self.model)
+                if position + 1 >= len(self.models):
+                    raise
+                self.model = self.models[position + 1]  # sticky: later calls use it too
+
+    def _complete(self, system: str, user: str) -> dict:
         body = {
             "model": self.model,
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -200,11 +216,11 @@ class ScriptedLLM:
         return item
 
 
-def make_llm(provider: str, api_key: str = "", model: str = ""):
+def make_llm(provider: str, api_key: str = "", model: str = "", fallback_models: list[str] | None = None):
     """Build the configured client. ``none``/``fake`` means no LLM (retrieval-only answers)."""
     provider = (provider or "").lower()
     if provider == "groq":
-        return GroqClient(api_key, model)
+        return GroqClient(api_key, model, fallback_models)
     if provider == "gemini":
         return GeminiClient(api_key, model)
     if provider in ("", "none", "fake"):

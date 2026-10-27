@@ -28,6 +28,12 @@ class Settings:
     llm_provider: str = field(default_factory=lambda: os.getenv("LLM_PROVIDER", "fake"))
     llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", ""))
     llm_api_key: str = field(default_factory=lambda: os.getenv("LLM_API_KEY", ""), repr=False)
+    # Comma-separated models to switch to when the main model's DAILY quota is used up.
+    # Unset = the provider's defaults; empty string = no fallback (used by the evaluation).
+    llm_fallback_models: list[str] | None = field(
+        default_factory=lambda: None if os.getenv("LLM_FALLBACK_MODELS") is None
+        else [m.strip() for m in os.getenv("LLM_FALLBACK_MODELS", "").split(",") if m.strip()]
+    )
 
 
 def normalize_database_url(url: str) -> str:

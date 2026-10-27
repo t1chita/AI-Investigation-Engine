@@ -46,7 +46,8 @@ def run_retrieval(components, rows) -> None:
 
 def run_answers(components, rows, limit, pause) -> None:
     s = components.settings
-    llm = make_llm(s.llm_provider, s.llm_api_key, s.llm_model)
+    # No fallback models here: a configuration comparison must use one model throughout.
+    llm = make_llm(s.llm_provider, s.llm_api_key, s.llm_model, fallback_models=[])
     if llm is None:
         raise SystemExit("answers evaluation needs an LLM: set LLM_PROVIDER and LLM_API_KEY in .env")
     bank = evaluation.question_bank(rows)[:limit]

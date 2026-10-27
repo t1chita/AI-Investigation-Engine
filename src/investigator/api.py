@@ -34,7 +34,7 @@ def init(components: Components | None = None, llm="auto") -> None:
     if llm == "auto":
         s = components.settings
         try:
-            llm = make_llm(s.llm_provider, s.llm_api_key, s.llm_model)
+            llm = make_llm(s.llm_provider, s.llm_api_key, s.llm_model, getattr(s, "llm_fallback_models", None))
         except LLMError as exc:  # e.g. provider set but key missing: run retrieval-only, say why
             STATE["llm_error"] = str(exc)
             llm = None
