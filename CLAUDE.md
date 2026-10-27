@@ -143,7 +143,8 @@ shell. Local Qdrant allows one process at a time: stop the API before running in
 | Evaluation (46 questions, 2 configs) | yes | yes | answer correctness 0.717 vs 0.674; `docs/evaluation-report.md` |
 | Cloud data (Neon + Qdrant Cloud) | yes | yes | 66,598 docs, 130,854 chunks = 130,854 vectors |
 | Slim server (≤ 512 MB) | yes | yes (local, cloud data) | 359 MB; 56 tests; clean-venv install without torch |
-| Deployment + persistence | Dockerfile, render.yaml | no | needs GitHub push + Render account; Docker image not built locally |
+| Deployment + persistence | yes | yes | https://ai-investigation-engine-3faf.onrender.com; 334–336 MB, start-up 93–102 s; test doc survived container replacement (README) |
+| LLM fallback on daily quota | yes | yes (live) | gpt-oss-120b → gpt-oss-20b → qwen3.8-27b; evaluation uses no fallback |
 | README, evaluation report | yes | – | AI usage report not written |
 
 Local data (git-ignored): `data/registry.db` (SQLite, 208 MB), `data/qdrant/` (1 GB, both

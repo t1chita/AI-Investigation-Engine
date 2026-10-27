@@ -203,6 +203,7 @@ th { background: var(--panel); font-weight: 600; }
     <li><a href="#choices">Choices and alternatives</a></li>
     <li><a href="#trace">One question, step by step</a></li>
     <li><a href="#results">Results</a></li>
+    <li><a href="#deploy">Deployment</a></li>
     <li><a href="#code">Reading the code</a></li>
     <li><a href="#status">Status</a></li>
     <li><a href="#next">Next project checklist</a></li>
@@ -236,7 +237,7 @@ th { background: var(--panel); font-weight: 600; }
   <div class="node c-search"><b>Chunk</b><span>fixed and sentence strategies</span></div>
   <div class="arrow" aria-hidden="true"></div>
   <div class="fork">
-    <div class="node c-search"><b>Embed → Qdrant</b><span>meaning vectors</span></div>
+    <div class="node c-search"><b>Embed → Qdrant</b><span>MiniLM vectors (ONNX)</span></div>
     <div class="node c-search"><b>Words → BM25</b><span>keyword index</span></div>
   </div>
 </div>
@@ -275,7 +276,8 @@ th { background: var(--panel); font-weight: 600; }
   <div class="l">Core Data store</div><div class="m">→</div><div class="r"><code>Registry</code> (SQL tables)</div>
   <div class="l">Repository / use-case layer</div><div class="m">→</div><div class="r"><code>DocumentService</code></div>
   <div class="l">Backend you call with URLSession</div><div class="m">→</div><div class="r">FastAPI <code>api.py</code></div>
-  <div class="l">Quick SwiftUI prototype</div><div class="m">→</div><div class="r">Streamlit UI</div>
+  <div class="l">A small web view bundled with the app</div><div class="m">→</div><div class="r">One HTML page served by FastAPI (<code>web/index.html</code>)</div>
+  <div class="l">TestFlight / App Store hosting your build</div><div class="m">→</div><div class="r">Render (runs our Docker image)</div>
   <div class="l">XCTest + mocks behind a protocol</div><div class="m">→</div><div class="r">pytest + <code>ScriptedLLM</code>, <code>HashEmbedder</code></div>
   <div class="l"><code>.xcconfig</code> with secrets</div><div class="m">→</div><div class="r"><code>.env</code> (git-ignored)</div>
   <div class="l">Archived build</div><div class="m">→</div><div class="r">Docker image</div>
@@ -323,21 +325,29 @@ th { background: var(--panel); font-weight: 600; }
     <p class="why">Why now: scale is the biggest risk; real data then feeds every later step. Took 6.3 minutes.</p>
     <div class="chips"><span class="chip">bulk.py</span><span class="chip proof">0 failed, counts match</span></div></li>
   <li class="c-llm"><div class="dot">9</div><h4>LLM client and investigation pipeline</h4>
-    <p>Plan, search tool, decide, validate; Groq and Gemini clients with retries.</p>
+    <p>Plan, search tool, decide, second chance, validate; Groq and Gemini clients with retries, daily-quota detection and fallback models.</p>
     <p class="why">Why now: sits on top of search. Built against a fake LLM first, so behaviour is tested without cost.</p>
     <div class="chips"><span class="chip">llm.py</span><span class="chip">investigate.py</span></div></li>
   <li class="c-neutral"><div class="dot">10</div><h4>API, then UI</h4>
-    <p>FastAPI endpoints; Streamlit talks to them over HTTP like an app to a backend.</p>
+    <p>FastAPI endpoints; one HTML page (first Streamlit, later replaced) talks to them over HTTP like an app to a backend.</p>
     <p class="why">Why now: they only expose what already works.</p>
-    <div class="chips"><span class="chip">api.py</span><span class="chip">streamlit_app.py</span></div></li>
+    <div class="chips"><span class="chip">api.py</span><span class="chip">web/index.html</span></div></li>
   <li class="c-eval"><div class="dot">11</div><h4>Evaluation</h4>
     <p>46 questions in 5 categories; retrieval on 500 more.</p>
     <p class="why">Why now: you can only measure a working system.</p>
     <div class="chips"><span class="chip">evaluation.py</span><span class="chip proof">two runs measured</span></div></li>
-  <li class="c-neutral"><div class="dot">12</div><h4>Deploy</h4>
-    <p>Hugging Face Spaces + Neon + Qdrant Cloud.</p>
-    <p class="why">Why last: deploying unfinished work means redeploying again and again; needs your accounts.</p>
-    <div class="chips"><span class="chip">Dockerfile</span><span class="chip todo">not done</span></div></li>
+  <li class="c-data"><div class="dot">12</div><h4>Load the cloud stores</h4>
+    <p>Same bulk loader, pointed at Neon and Qdrant Cloud, one chunk strategy to fit free storage.</p>
+    <p class="why">Why now: the host can change; the data should not. Took 8 minutes; counts matched.</p>
+    <div class="chips"><span class="chip">ingest_hotpotqa.py</span><span class="chip proof">130,854 = 130,854</span></div></li>
+  <li class="c-neutral"><div class="dot">13</div><h4>Fit a 512 MB server</h4>
+    <p>Measure first, then cut: ONNX embeddings, compact BM25, plain-HTTP Qdrant, one process.</p>
+    <p class="why">Why: free hosts give 512 MB; the app needed about 1.1 GB. Every cut was proven to give identical results.</p>
+    <div class="chips"><span class="chip">embeddings.py</span><span class="chip">bm25.py</span><span class="chip">vector_store.py</span><span class="chip proof">~1,105 → 335 MB</span></div></li>
+  <li class="c-neutral"><div class="dot">14</div><h4>Deploy on Render</h4>
+    <p>GitHub push → Render builds the Docker image → public HTTPS URL. Secrets typed into Render, never in Git.</p>
+    <p class="why">Why last: deploying unfinished work means redeploying again and again. Hugging Face (needs PRO) and Oracle (no capacity) were tried first.</p>
+    <div class="chips"><span class="chip">Dockerfile</span><span class="chip">render.yaml</span><span class="chip proof">live, data survived restart</span></div></li>
 </ol>
 
 <!-- ============================================================ -->
@@ -349,6 +359,7 @@ th { background: var(--panel); font-weight: 600; }
   <button type="button" id="f-search" data-f="search" class="c-search" aria-pressed="false">Search</button>
   <button type="button" id="f-llm" data-f="llm" class="c-llm" aria-pressed="false">LLM</button>
   <button type="button" id="f-eval" data-f="eval" class="c-eval" aria-pressed="false">Evaluation</button>
+  <button type="button" id="f-ops" data-f="ops" class="c-neutral" aria-pressed="false">Deployment</button>
   <input id="f-text" type="search" placeholder="Search a term" aria-label="Search a term">
   <span class="count" id="f-count"></span>
 </div>
@@ -397,6 +408,15 @@ th { background: var(--panel); font-weight: 600; }
   <div class="card c-eval" data-k="eval"><h4>Answer correctness</h4><p>Right answer; or "insufficient" when unanswerable; or "conflict" citing both sides.</p></div>
   <div class="card c-eval" data-k="eval"><h4>Citation precision</h4><p>Share of cited documents that are actually relevant.</p></div>
   <div class="card c-eval" data-k="eval"><h4>Configuration</h4><p>One combination of settings. We compare two.</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>PaaS vs IaaS</h4><p>Render runs your app for you (platform); Oracle rents you an empty server you manage (infrastructure).</p><p class="ios">App Store distribution vs running your own Mac mini server</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Container</h4><p>A packaged, runnable copy of the app with its Python and libraries, built from the <code>Dockerfile</code>.</p><p class="ios">an archived, signed build</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Stateless server</h4><p>Keeps no data of its own, so it can be restarted or replaced; data lives in Neon and Qdrant.</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Cold start</h4><p>The wait while a sleeping free-tier server starts again: here about 1.5–2 minutes.</p><p class="ios">app launch from a killed state</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>RSS (resident memory)</h4><p>Memory the process really uses; what the 512 MB limit counts. <code>/health</code> reports it.</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>ONNX</h4><p>A portable format for running a trained model without PyTorch. Same model, same vectors, far less memory.</p><p class="ios">like shipping a compiled Core ML model instead of the training code</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Rolling quota</h4><p>A limit counted over the last 24 hours, not reset at midnight; capacity returns gradually.</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Fallback model</h4><p>A second LLM used when the first one's quota is gone; the answer says which one replied.</p></div>
+  <div class="card c-neutral" data-k="ops"><h4>Environment secret</h4><p>A key typed into the host's settings (Render), read at start-up, never stored in Git.</p><p class="ios">a value injected by your CI, not in the repo</p></div>
 </div>
 
 <!-- ============================================================ -->
@@ -484,9 +504,9 @@ th { background: var(--panel); font-weight: 600; }
   <div class="dec c-neutral"><h4>Backend</h4><span class="pick">FastAPI</span>
     <div class="alts"><span class="alt">Flask</span><span class="alt">Django</span></div>
     <p>Validation and <code>/docs</code> for free, little code.</p><p class="when">Django when you need users, admin and a full ORM.</p></div>
-  <div class="dec c-neutral"><h4>UI</h4><span class="pick">Streamlit</span>
-    <div class="alts"><span class="alt">Gradio</span><span class="alt">React</span><span class="alt">SwiftUI</span></div>
-    <p>Function over looks; pure Python.</p><p class="when">React or SwiftUI for a real product.</p></div>
+  <div class="dec c-neutral"><h4>UI</h4><span class="pick">one HTML page</span>
+    <div class="alts"><span class="alt">Streamlit (first version)</span><span class="alt">React</span><span class="alt">SwiftUI</span></div>
+    <p>Streamlit was quickest to build but needs its own ~150 MB process; a plain page served by FastAPI needs none.</p><p class="when">React or SwiftUI for a real product.</p></div>
   <div class="dec c-neutral"><h4>RAG framework</h4><span class="pick">None, own code</span>
     <div class="alts"><span class="alt">LangChain</span><span class="alt">LlamaIndex</span><span class="alt">Haystack</span></div>
     <p>Required custom logic; you must explain every step.</p><p class="when">Frameworks on large projects where speed matters more than control.</p></div>
@@ -505,13 +525,13 @@ th { background: var(--panel); font-weight: 600; }
   <div class="dec c-search"><h4>Vector DB</h4><span class="pick">Qdrant</span>
     <div class="alts"><span class="alt">pgvector</span><span class="alt">Chroma</span><span class="alt">Pinecone</span><span class="alt">Weaviate</span></div>
     <p>Free 1 GB cloud, same API locally, delete by filter.</p><p class="when">pgvector to keep everything in one Postgres.</p></div>
-  <div class="dec c-search"><h4>Keyword index</h4><span class="pick">own BM25</span>
+  <div class="dec c-search"><h4>Keyword index</h4><span class="pick">own BM25, NumPy arrays</span>
     <div class="alts"><span class="alt">Postgres FTS</span><span class="alt">Elasticsearch</span><span class="alt">rank_bm25</span></div>
     <p>Required custom algorithm; rebuilds from the registry in 3.7 s.</p><p class="when">Elasticsearch for millions of documents.</p></div>
   <div class="dec c-search"><h4>Chunking</h4><span class="pick">sentence ≤ 64 words</span>
     <div class="alts"><span class="alt">fixed 64/16 (compared)</span><span class="alt">recursive</span><span class="alt">semantic</span></div>
     <p>Clean citations; passages are short (median 78 words).</p><p class="when">Recursive or semantic for long, mixed documents.</p></div>
-  <div class="dec c-search"><h4>Embedding model</h4><span class="pick">MiniLM-L6 (384)</span>
+  <div class="dec c-search"><h4>Embedding model</h4><span class="pick">MiniLM-L6 (384) via ONNX</span>
     <div class="alts"><span class="alt">bge-base</span><span class="alt">e5-base</span><span class="alt">API embeddings</span></div>
     <p>Runs on a laptop and free CPU; fits the free vector storage.</p><p class="when">A stronger model: BM25 beats MiniLM here.</p></div>
   <div class="dec c-search"><h4>Fusion</h4><span class="pick">RRF, k = 60</span>
@@ -525,10 +545,10 @@ th { background: var(--panel); font-weight: 600; }
     <p>Same on every provider; our code validates it.</p></div>
   <div class="dec c-llm"><h4>LLM provider</h4><span class="pick">Groq · gpt-oss-120b</span>
     <div class="alts"><span class="alt">Gemini (402: no credits)</span><span class="alt">OpenAI</span><span class="alt">local Ollama</span></div>
-    <p>Free and fast; switching was a <code>.env</code> change only.</p></div>
-  <div class="dec c-neutral"><h4>Hosting</h4><span class="pick">HF Spaces + Neon + Qdrant Cloud</span>
-    <div class="alts"><span class="alt">Render</span><span class="alt">Koyeb</span><span class="alt">Oracle Cloud</span></div>
-    <p>Render's 512 MB RAM is too small for the model.</p></div>
+    <p>Free and fast; switching was a <code>.env</code> change only. Each model has its own daily quota, so the live app falls back to gpt-oss-20b, then qwen3.8-27b.</p></div>
+  <div class="dec c-neutral"><h4>Hosting</h4><span class="pick">Render + Neon + Qdrant Cloud</span>
+    <div class="alts"><span class="alt">HF Spaces (now needs PRO)</span><span class="alt">Oracle (no capacity)</span><span class="alt">Vercel (serverless limits)</span><span class="alt">Cloudflare (no free Python server)</span></div>
+    <p>Render runs our Docker image for free in 512 MB; the data lives elsewhere, so the host can change.</p><p class="when">A VM (Oracle) when you need more memory or no sleeping.</p></div>
 </div>
 
 <!-- ============================================================ -->
@@ -593,10 +613,60 @@ th { background: var(--panel); font-weight: 600; }
   <div class="bar-row c-eval"><span>missed conflict</span><div class="bar-track"><div class="bar" style="width:7.7%"></div></div><span class="bar-val">1</span></div>
   <div class="axis"><div></div><div><span>0</span><span>share of 13</span><span></span></div><div></div></div>
 </div>
-<p class="small">Fixes now in the code: follow-up searches get reserved evidence slots, the model gets a second chance before abstaining, and the two weak synthetic conflicts were rewritten. Run 2 is measuring the effect; its numbers will replace this note.</p>
+<p class="small">Fixes now in the code: follow-up searches get reserved evidence slots, the model gets a second chance before abstaining, and the two weak synthetic conflicts were rewritten. Run 2 measures the effect; it resumes automatically as Groq's rolling daily token window frees up, and its numbers will replace this note.</p>
 
 <!-- ============================================================ -->
-<h2 id="code">9. Reading the code</h2>
+<h2 id="deploy">9. Deployment and the 512 MB diet</h2>
+<p class="sub">Live at <a href="https://ai-investigation-engine-3faf.onrender.com">ai-investigation-engine-3faf.onrender.com</a>. The container holds no data, so it can be replaced at any time.</p>
+
+<p class="flow-label">Where everything runs</p>
+<div class="flow">
+  <div class="node c-neutral"><b>Browser</b><span>the page at /</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-neutral"><b>Render</b><span>Docker, free, 512 MB; FastAPI = page + API; BM25 in memory</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="fork">
+    <div class="node c-data"><b>Neon Postgres</b><span>registry: documents, chunks (160 MB)</span></div>
+    <div class="node c-search"><b>Qdrant Cloud</b><span>130,854 vectors</span></div>
+    <div class="node c-llm"><b>Groq</b><span>gpt-oss-120b, then fallbacks</span></div>
+  </div>
+</div>
+
+<h3>Memory: before and after (bars to scale, 0 to 1,200 MB)</h3>
+<div class="chart">
+  <div class="bar-row c-eval"><span>first version</span><div class="bar-track"><div class="bar" style="width:92.1%"></div></div><span class="bar-val">~1,105</span></div>
+  <div class="bar-row c-search"><span><b>live on Render</b></span><div class="bar-track"><div class="bar" style="width:28%"></div></div><span class="bar-val">335</span></div>
+  <div class="bar-row c-neutral"><span>free-tier limit</span><div class="bar-track"><div class="bar" style="width:42.7%"></div></div><span class="bar-val">512</span></div>
+  <div class="axis"><div></div><div><span>0</span><span>600</span><span>1,200 MB</span></div><div></div></div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>Cut</th><th>Saved</th><th>How we proved nothing changed</th></tr></thead>
+<tbody>
+<tr><td>Embeddings: PyTorch → ONNX (<code>fastembed</code>), same MiniLM</td><td>~320 MB</td><td>Cosine similarity 1.00000 on 202 texts; stored vectors stay valid</td></tr>
+<tr><td>BM25: Python dictionaries → NumPy posting arrays</td><td>~285 MB</td><td>Identical top-10 on 500 questions; also faster (3.4 vs 5.1 ms)</td></tr>
+<tr><td>Build BM25 in a short-lived child process</td><td>~100 MB</td><td>Test: same results as building in-process</td></tr>
+<tr><td>Qdrant over plain HTTP instead of <code>qdrant_client</code></td><td>78 MB</td><td>Test against a fake Qdrant server</td></tr>
+<tr><td>Streamlit → one HTML page served by FastAPI</td><td>~150 MB</td><td>Same features checked in the browser</td></tr>
+</tbody></table></div>
+
+<h3>The persistence test</h3>
+<ol class="trace">
+  <li class="c-data"><div class="rail"><span class="circle">1</span></div><div class="body"><b>Upload</b><p>A marked test file through the live app (container A, commit 4525233). Keyword search finds it.</p></div></li>
+  <li class="c-neutral"><div class="rail"><span class="circle">2</span></div><div class="body"><b>Replace the container</b><p>A new push makes Render start container B from scratch (uptime 117 s).</p></div></li>
+  <li class="c-search"><div class="rail"><span class="circle">3</span></div><div class="body"><b>Still there</b><p>On B: status indexed, found by keyword search (BM25 rebuilt from Neon) and semantic search (Qdrant).</p></div></li>
+  <li class="c-data"><div class="rail"><span class="circle">4</span></div><div class="body"><b>Delete</b><p>Through the app: 404 afterwards, gone from search, count back to 66,598.</p></div></li>
+</ol>
+
+<h3>Limits to know in production</h3>
+<div class="status-grid">
+  <div class="st todo"><b>Sleeping</b>After 15 min idle the server stops; the next visit waits ~1.5–2 min (start-up measured 93–102 s).</div>
+  <div class="st todo"><b>LLM daily tokens</b>200,000 per model per rolling 24 h. One full evaluation uses about a day's worth; the live app then falls back to other models.</div>
+  <div class="st ok"><b>Storage</b>Neon 160 MB of 512; Qdrant 130,854 vectors in the 1 GB cluster.</div>
+  <div class="st ok"><b>Cost</b>0. Every service is on its free tier.</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="code">10. Reading the code</h2>
 <p class="sub">Read in this order; run the matching test after each file (<code>pytest tests/test_ranking.py -v</code>).</p>
 <div class="flow">
   <div class="node c-data"><b>1 · models.py, text.py</b><span>data shapes, hashing, tokens</span></div>
@@ -619,7 +689,7 @@ th { background: var(--panel); font-weight: 600; }
 <div class="flow">
   <div class="node c-llm"><b>9 · investigate.py</b><span>run → second chance → validate</span></div>
   <div class="arrow" aria-hidden="true"></div>
-  <div class="node c-neutral"><b>10 · api.py, UI</b><span>thin layers</span></div>
+  <div class="node c-neutral"><b>10 · api.py, web/index.html</b><span>thin layers</span></div>
   <div class="arrow" aria-hidden="true"></div>
   <div class="node c-eval"><b>11 · evaluation.py</b><span>each metric function</span></div>
 </div>
@@ -638,11 +708,10 @@ th { background: var(--panel); font-weight: 600; }
 </tbody></table></div>
 <pre>source .venv/bin/activate
 pytest                                   # all tests, under a second
-uvicorn investigator.api:app --port 8000 # then open http://localhost:8000/docs
-streamlit run app/streamlit_app.py       # UI on http://localhost:8501</pre>
+uvicorn investigator.api:app --port 8000 # UI at http://localhost:8000, API docs at /docs</pre>
 
 <!-- ============================================================ -->
-<h2 id="status">10. Status</h2>
+<h2 id="status">11. Status</h2>
 <div class="status-grid">
   <div class="st ok"><b>Done</b>3 formats, metadata, chunking, duplicates, add/update/delete</div>
   <div class="st ok"><b>Done</b>Vector DB, embeddings, hybrid search, own BM25 + RRF</div>
@@ -650,13 +719,14 @@ streamlit run app/streamlit_app.py       # UI on http://localhost:8501</pre>
   <div class="st ok"><b>Done</b>Multi-step RAG, citations, conflicts, abstention, tool calls</div>
   <div class="st ok"><b>Done</b>API and UI, tested locally</div>
   <div class="st ok"><b>Done</b>46-question evaluation, 2 configurations</div>
-  <div class="st todo"><b>To do</b>Public URL + data surviving a restart</div>
+  <div class="st ok"><b>Done</b>Public URL on Render; data survived container replacement</div>
+  <div class="st ok"><b>Done</b>Code on GitHub with history</div>
+  <div class="st todo"><b>Running</b>Evaluation run 2 (resumes as quota frees)</div>
   <div class="st todo"><b>To do</b>AI usage report</div>
-  <div class="st todo"><b>To do</b>Commit and push to GitHub</div>
 </div>
 
 <!-- ============================================================ -->
-<h2 id="next">11. Next project checklist</h2>
+<h2 id="next">12. Next project checklist</h2>
 <ol class="checklist">
   <li><span>List requirements and what will prove each one.</span></li>
   <li><span>Inspect the data with a throwaway script before designing.</span></li>

@@ -5,14 +5,15 @@ facts across several sources, and answers questions with citations to exact sent
 evidence is missing it says so, and when sources disagree it reports the conflict instead of
 choosing one.
 
-> **Status (28 October 2026).** Implemented and tested: ingestion of 3 formats with
+**Live demo: https://ai-investigation-engine-3faf.onrender.com** (free tier: if nobody used it in
+the last 15 minutes, the first page load takes about 2 minutes while the server starts).
+
+> **Status (28 October 2026).** Implemented, tested and deployed: ingestion of 3 formats with
 > add/update/delete and deduplication, two chunkers, Qdrant + our BM25 + our RRF hybrid search,
 > the multi-step RAG pipeline with tool calls, citations, conflict reporting and abstention, the
-> FastAPI backend with its web page, the 66,581-record corpus (loaded locally **and** into Neon +
-> Qdrant Cloud), and both evaluations (retrieval on 500 questions, end-to-end answers on 46
-> questions with Groq). The app runs against the cloud data locally in about 360 MB.
-> **Not done yet:** the public deployment (Render, needs your account and a GitHub push) and the
-> second answer-evaluation run (waits for Groq's daily token quota). See "What is left".
+> FastAPI backend with its web page, the 66,581-record corpus in Neon + Qdrant Cloud, both
+> evaluations (retrieval on 500 questions, end-to-end answers on 46 questions), and a verified
+> public deployment on Render with data surviving container replacement. See "What is left".
 
 ## How it works
 
@@ -120,20 +121,44 @@ Full tables, the 46-question bank, failure analysis by cause and limitations:
 ## Deployment (free tiers)
 
 ```text
-browser ──> Render web service (Docker, free, 512 MB): FastAPI = web page + JSON API
+browser ──> https://ai-investigation-engine-3faf.onrender.com
+            Render web service (Docker, free, 512 MB): FastAPI = web page + JSON API
                  │  keyword index (our BM25) rebuilt from Postgres at start-up, in memory
                  ├──> Neon Postgres (registry: 66,598 documents, 130,854 chunks; 160 MB of 0.5 GB)
                  ├──> Qdrant Cloud (130,854 vectors, 384-d; free 1 GB cluster)
                  └──> Groq API (LLM)
 ```
 
+Measured on the live service on 28 October 2026 (numbers from its own `/health` endpoint):
+
 | Piece | Service | Limit that matters | Measured |
 | --- | --- | --- | --- |
-| App | Render free web service (`render.yaml`, `Dockerfile`) | 512 MB RAM; sleeps after 15 min idle | 359 MB after start-up; start-up 40 s (keyword index from Neon) |
-| Registry | Neon Postgres | 0.5 GB storage | 160 MB used |
-| Vectors | Qdrant Cloud | 1 GB cluster | 130,854 points, status green |
-| LLM | Groq free tier | 1,000 req/day, 8,000 tokens/min, 200,000 tokens/day | ~990 tokens per LLM call, 2–5 calls per question |
+| App | Render free web service (`render.yaml`, `Dockerfile`), shared CPU | 512 MB RAM; sleeps after 15 min idle; 750 free hours/month | **334–336 MB** in use; **start-up 93–102 s** (most of it rebuilding the keyword index from Neon); a push redeploys in 2–5 min |
+| Registry | Neon Postgres (free) | 0.5 GB storage | 66,598 documents, 130,854 chunks, 160 MB |
+| Vectors | Qdrant Cloud (free) | 1 GB cluster | 130,854 points, status green |
+| LLM | Groq free tier | per model: 1,000 req/day, 8,000 tokens/min, 200,000 tokens/day (rolling 24 h) | ~990 tokens per LLM call, 2–5 calls per question; search alone needs no LLM |
 | Cost | | | 0 |
+
+The keyword search answers in about 2 s from outside, including network. The first request after
+the service has slept waits for start-up (about 1.5–2 minutes); the page shows "Starting the
+server…" and retries meanwhile.
+
+**LLM fallback.** Groq gives each model its own daily quota. When `openai/gpt-oss-120b` runs out,
+the live app continues with `openai/gpt-oss-20b`, then `qwen/qwen3.8-27b`, and the answer says
+which model produced it. Verified live: with the 120b quota used up, "Which change caused incident
+INC-7781, and who approved it?" was answered correctly ("CHG-0412 … approved by Dana Whitfield",
+both sources cited) by `gpt-oss-20b` in 4 LLM calls. The evaluation never uses fallbacks.
+
+**Persistence test (passed).** The container keeps no data: the registry is in Neon, vectors in
+Qdrant, and the keyword index is rebuilt from Neon at every start.
+1. Uploaded a marked test document (`persistence-test.txt`) through the live app on the container
+   running commit `4525233`; keyword search found it.
+2. Pushed a new commit, so Render replaced the container (the new one, `29bc998`, reported an
+   uptime of 117 s).
+3. On the new container the document was still there (status `indexed`, 1 chunk) and was found
+   by both keyword and semantic search.
+4. Deleted it through the app: the API returned 404 for it afterwards, hybrid search no longer
+   returned it, and the document count went back to 66,598.
 
 What made it fit 512 MB (all measured on the real data): MiniLM through ONNX instead of PyTorch
 (identical vectors, ~480 → ~160 MB), BM25 stored as NumPy arrays (~365 → ~80 MB, identical top-10
@@ -149,9 +174,7 @@ Oracle Cloud Always Free (no Ampere capacity in the account's home region, Paris
 
 ## What is left
 
-1. **Deploy to Render**: push to GitHub, create a free Render account, create a Blueprint from
-   the repo (`render.yaml`), enter the 4 secrets; then verify the public URL and that data
-   survives a restart.
-2. **Answer evaluation run 2** (second chance before abstaining, reserved evidence slots, fixed
-   synthetic conflicts) once Groq's daily token quota resets.
-3. The AI usage report.
+1. **Answer evaluation run 2** (second chance before abstaining, reserved evidence slots, fixed
+   synthetic conflicts). It resumes automatically as Groq's rolling daily token window frees up;
+   results go into `docs/evaluation-report.md`.
+2. The AI usage report.
