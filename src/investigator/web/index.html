@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Investigation Engine</title>
+<style>
+/* One page, three views. Plain HTML + JS calling the JSON API; no build step, no libraries. */
+:root {
+  --bg: #fbfbfa; --panel: #f1f2f0; --fg: #1d2124; --muted: #5b6268; --line: #d8dbd8;
+  --accent: #0b6b62; --accent-soft: #e2f0ee; --hl: #fdf0c4;
+  --ok: #2d6a3a; --ok-soft: #e3f1e5; --warn: #8a5a00; --warn-soft: #fbf0d9; --bad: #a33a2a; --bad-soft: #fbe6e2;
+  --info: #2f5f9e; --info-soft: #e4ecf7;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #15181a; --panel: #1d2124; --fg: #e3e6e4; --muted: #9aa3a8; --line: #30363a;
+    --accent: #5cc4b6; --accent-soft: #173431; --hl: #4a3f12;
+    --ok: #86cf94; --ok-soft: #1a2e1e; --warn: #e2b354; --warn-soft: #33290f; --bad: #f08a78; --bad-soft: #3a1d18;
+    --info: #8fb4e8; --info-soft: #1a2738; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-size: 15px; line-height: 1.5; }
+header { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; padding: 12px max(16px, 3vw); border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-size: 18px; margin: 0; }
+nav { display: flex; gap: 4px; }
+nav button { font: inherit; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+nav button[aria-current="page"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+#health { font-size: 13px; color: var(--muted); margin-left: auto; }
+main { max-width: 1000px; margin: 0 auto; padding: 20px max(16px, 3vw) 60px; }
+section[hidden] { display: none; }
+h2 { font-size: 18px; margin: 24px 0 8px; }
+label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+textarea, input[type=text], input[type=search], select { font: inherit; width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 10px 0; }
+.row > * { min-width: 0; }
+.grow { flex: 1 1 240px; }
+button.primary, button.plain, button.danger { font: inherit; border-radius: 6px; padding: 7px 14px; cursor: pointer; border: 1px solid var(--accent); }
+button.primary { background: var(--accent); color: var(--bg); font-weight: 600; }
+button.plain { background: var(--bg); color: var(--accent); }
+button.danger { background: var(--bg); color: var(--bad); border-color: var(--bad); }
+button:disabled { opacity: .5; cursor: default; }
+.status { display: inline-block; font-weight: 600; padding: 2px 10px; border-radius: 12px; font-size: 14px; }
+.s-answered { background: var(--ok-soft); color: var(--ok); }
+.s-conflict { background: var(--warn-soft); color: var(--warn); }
+.s-insufficient, .s-retrieval_only { background: var(--info-soft); color: var(--info); }
+.s-error { background: var(--bad-soft); color: var(--bad); }
+.answer { font-size: 17px; margin: 10px 0; }
+.chip { display: inline-block; font-family: ui-monospace, Menlo, monospace; font-size: 12px; padding: 0 6px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); margin-left: 4px; cursor: pointer; border: none; }
+.conflict { background: var(--warn-soft); padding: 8px 12px; border-radius: 6px; margin: 6px 0; }
+.ev { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+.ev.cited { border-color: var(--accent); }
+.ev h3 { font-size: 14px; margin: 0 0 4px; }
+.meta { font-size: 12.5px; color: var(--muted); }
+.src { margin-top: 8px; padding: 8px 10px; background: var(--panel); border-radius: 6px; font-size: 14px; }
+.src p { margin: 3px 0; }
+.src .on { background: var(--hl); }
+.src .off { color: var(--muted); }
+.msg { padding: 8px 12px; border-radius: 6px; margin: 8px 0; }
+.msg.err { background: var(--bad-soft); color: var(--bad); }
+.msg.ok { background: var(--ok-soft); color: var(--ok); }
+.msg.info { background: var(--info-soft); color: var(--info); }
+details { margin: 10px 0; }
+summary { cursor: pointer; color: var(--muted); }
+pre { white-space: pre-wrap; word-break: break-word; font-size: 12.5px; background: var(--panel); padding: 8px; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--panel); }
+.table-wrap { overflow-x: auto; }
+.busy::after { content: " …"; }
+</style>
+</head>
+<body>
+<header>
+  <h1>AI Investigation Engine</h1>
+  <nav aria-label="Views">
+    <button type="button" data-view="investigate" aria-current="page">Investigate</button>
+    <button type="button" data-view="documents">Documents</button>
+    <button type="button" data-view="search">Search</button>
+  </nav>
+  <span id="health">Connecting…</span>
+</header>
+
+<main>
+<!-- ======================= Investigate ======================= -->
+<section id="view-investigate">
+  <form id="ask-form">
+    <label for="question">Question</label>
+    <textarea id="question" rows="3" placeholder="e.g. Which change caused incident INC-7781, and who approved it?"></textarea>
+    <div class="row">
+      <div><label for="ask-mode">Retrieval</label>
+        <select id="ask-mode"><option>hybrid</option><option>semantic</option><option>keyword</option></select></div>
+      <button class="primary" type="submit" id="ask-btn">Investigate</button>
+    </div>
+  </form>
+  <div id="ask-out"></div>
+</section>
+
+<!-- ======================= Documents ======================= -->
+<section id="view-documents" hidden>
+  <h2>Add documents</h2>
+  <form id="upload-form" class="row">
+    <div class="grow"><label for="upload-file">TXT, MD, JSON or PDF</label>
+      <input type="file" id="upload-file" accept=".txt,.md,.json,.pdf" multiple></div>
+    <button class="primary" type="submit">Upload</button>
+  </form>
+  <div id="upload-out"></div>
+
+  <h2>Browse</h2>
+  <form id="list-form" class="row">
+    <div class="grow"><label for="list-q">Title or id contains</label><input type="search" id="list-q"></div>
+    <div><label for="list-status">Status</label>
+      <select id="list-status"><option value="">any</option><option>indexed</option><option>duplicate</option><option>failed</option><option>indexing</option></select></div>
+    <button class="plain" type="submit">Filter</button>
+  </form>
+  <div id="list-out"></div>
+  <div class="row"><button class="plain" id="prev" type="button">← Previous</button><span id="page-info" class="meta"></span><button class="plain" id="next" type="button">Next →</button></div>
+  <div id="doc-out"></div>
+</section>
+
+<!-- ======================= Search ======================= -->
+<section id="view-search" hidden>
+  <p class="meta">Raw retrieval without the LLM: compare semantic, keyword (BM25) and hybrid (RRF) rankings.</p>
+  <form id="search-form" class="row">
+    <div class="grow"><label for="search-q">Query</label><input type="search" id="search-q"></div>
+    <div><label for="search-mode">Mode</label>
+      <select id="search-mode"><option>hybrid</option><option>semantic</option><option>keyword</option></select></div>
+    <div><label for="search-k">Results</label>
+      <select id="search-k"><option>5</option><option selected>10</option><option>20</option></select></div>
+    <button class="primary" type="submit">Search</button>
+  </form>
+  <div id="search-out"></div>
+</section>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const STATUS = {answered: "Answered", conflict: "Conflicting evidence", insufficient: "Insufficient evidence",
+  retrieval_only: "Retrieval only (no LLM configured)", error: "Error"};
+
+async function api(method, path, body) {
+  const opts = {method};
+  if (body instanceof FormData) opts.body = body;
+  else if (body) { opts.body = JSON.stringify(body); opts.headers = {"Content-Type": "application/json"}; }
+  const r = await fetch(path, opts);
+  if (r.status === 204) return {};
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const d = data.detail;
+    throw new Error(`${r.status}: ${typeof d === "string" ? d : JSON.stringify(d ?? "request failed")}`);
+  }
+  return data;
+}
+const msg = (kind, text) => `<div class="msg ${kind}">${esc(text)}</div>`;
+
+// ---- navigation -------------------------------------------------------------------------
+document.querySelectorAll("nav button").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("nav button").forEach((x) => x.removeAttribute("aria-current"));
+  b.setAttribute("aria-current", "page");
+  document.querySelectorAll("main > section").forEach((s) => (s.hidden = s.id !== "view-" + b.dataset.view));
+  if (b.dataset.view === "documents" && !$("#list-out").innerHTML) loadList(0);
+}));
+
+async function loadHealth() {
+  try {
+    const h = await api("GET", "/health");
+    $("#health").textContent = `${h.documents.toLocaleString()} documents · ${h.llm || "no LLM"}`;
+  } catch (e) { $("#health").textContent = "Backend not reachable"; }
+}
+
+// ---- source viewer (shared) ------------------------------------------------------------------
+async function showSource(target, docId, start, end) {
+  if (target.dataset.open === "1") { target.innerHTML = ""; target.dataset.open = "0"; return; }
+  target.innerHTML = msg("info", "Loading source…");
+  try {
+    const d = await api("GET", `/documents/${encodeURIComponent(docId)}`);
+    target.innerHTML = `<div class="src"><div class="meta">${esc(d.doc_id)} · v${d.version} · ${esc(d.format)} · ${esc(d.status)}</div>` +
+      d.text_sentences.map((s) => `<p class="${s.index >= start && s.index <= end ? "on" : "off"}"><b>${s.index}.</b> ${esc(s.text)}</p>`).join("") + "</div>";
+    target.dataset.open = "1";
+  } catch (e) { target.innerHTML = msg("err", e.message); }
+}
+
+// ---- investigate ----------------------------------------------------------------------------
+$("#ask-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const q = $("#question").value.trim();
+  if (q.length < 3) { $("#ask-out").innerHTML = msg("err", "Enter a question of at least 3 characters."); return; }
+  const btn = $("#ask-btn"); btn.disabled = true; btn.classList.add("busy");
+  $("#ask-out").innerHTML = msg("info", "Planning, searching and checking evidence. This usually takes 5–30 seconds.");
+  try { renderResult(await api("POST", "/investigate", {question: q, mode: $("#ask-mode").value})); }
+  catch (e) { $("#ask-out").innerHTML = msg("err", e.message); }
+  finally { btn.disabled = false; btn.classList.remove("busy"); }
+});
+
+function renderResult(r) {
+  const cited = new Set([...r.claims, ...r.conflicts].flatMap((c) => c.evidence));
+  const chips = (ids) => ids.map((id) => `<button type="button" class="chip" data-jump="${esc(id)}">${esc(id)}</button>`).join("");
+  let h = `<p><span class="status s-${esc(r.status)}">${esc(STATUS[r.status] || r.status)}</span></p>`;
+  if (r.answer) h += `<p class="answer">${esc(r.answer)}</p>`;
+  if (r.missing) h += msg("info", "Missing: " + r.missing);
+  if (r.error) h += msg("err", r.error);
+  if (r.claims.length) h += "<h2>Supporting claims</h2><ul>" + r.claims.map((c) => `<li>${esc(c.text)} ${chips(c.evidence)}</li>`).join("") + "</ul>";
+  if (r.conflicts.length) h += "<h2>Conflicts</h2>" + r.conflicts.map((c) => `<div class="conflict">${esc(c.description)} ${chips(c.evidence)}</div>`).join("");
+  const ordered = [...r.evidence].sort((a, b) => cited.has(b.eid) - cited.has(a.eid));
+  h += `<h2>Evidence (${cited.size} cited of ${r.evidence.length} retrieved)</h2>`;
+  h += ordered.map((e) => {
+    const span = e.sentence_start === e.sentence_end ? `sentence ${e.sentence_start}` : `sentences ${e.sentence_start}–${e.sentence_end}`;
+    return `<div class="ev ${cited.has(e.eid) ? "cited" : ""}" id="ev-${esc(e.eid)}">
+      <h3>[${esc(e.eid)}] ${esc(e.title)}${cited.has(e.eid) ? " · cited" : ""}</h3>
+      <div>${esc(e.text)}</div>
+      <div class="meta">${span}${e.page ? ", page " + e.page : ""} · found by “${esc(e.query)}” (rank ${e.rank})</div>
+      <button type="button" class="plain" data-src="${esc(e.doc_id)}" data-start="${e.sentence_start}" data-end="${e.sentence_end}">Show in source</button>
+      <div class="src-box"></div></div>`;
+  }).join("");
+  h += `<details><summary>Investigation trace · ${r.llm_calls} LLM calls</summary><pre>${esc(r.steps.map((s) => JSON.stringify(s)).join("\n"))}</pre>` +
+       (r.warnings.length ? `<pre>${esc(r.warnings.join("\n"))}</pre>` : "") + "</details>";
+  $("#ask-out").innerHTML = h;
+}
+
+document.addEventListener("click", (ev) => {
+  const jump = ev.target.closest("[data-jump]");
+  if (jump) { document.getElementById("ev-" + jump.dataset.jump)?.scrollIntoView({behavior: "smooth", block: "center"}); return; }
+  const src = ev.target.closest("[data-src]");
+  if (src) showSource(src.nextElementSibling, src.dataset.src, +src.dataset.start, +src.dataset.end);
+});
+
+// ---- documents ------------------------------------------------------------------------------
+const PAGE = 20; let offset = 0;
+$("#upload-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const files = $("#upload-file").files;
+  if (!files.length) { $("#upload-out").innerHTML = msg("err", "Choose at least one file."); return; }
+  let out = "";
+  for (const f of files) {
+    const fd = new FormData(); fd.append("file", f);
+    try {
+      const r = await api("POST", "/documents", fd);
+      out += r.documents.map((d) => msg("ok", `${f.name}: “${d.title}” → ${d.doc_id} [${d.status}]` + (d.duplicate_of ? ` (duplicate of ${d.duplicate_of})` : ""))).join("");
+    } catch (e) { out += msg("err", `${f.name}: ${e.message}`); }
+  }
+  $("#upload-out").innerHTML = out; $("#upload-file").value = ""; loadList(0); loadHealth();
+});
+
+$("#list-form").addEventListener("submit", (ev) => { ev.preventDefault(); loadList(0); });
+$("#prev").addEventListener("click", () => loadList(Math.max(0, offset - PAGE)));
+$("#next").addEventListener("click", () => loadList(offset + PAGE));
+
+async function loadList(newOffset) {
+  offset = newOffset;
+  const params = new URLSearchParams({q: $("#list-q").value, limit: PAGE, offset});
+  if ($("#list-status").value) params.set("status", $("#list-status").value);
+  try {
+    const r = await api("GET", "/documents?" + params);
+    $("#page-info").textContent = r.total ? `${offset + 1}–${Math.min(offset + PAGE, r.total)} of ${r.total.toLocaleString()}` : "no documents";
+    $("#prev").disabled = offset === 0; $("#next").disabled = offset + PAGE >= r.total;
+    $("#list-out").innerHTML = `<div class="table-wrap"><table><thead><tr><th>Title</th><th>Id</th><th>Version</th><th>Status</th><th></th></tr></thead><tbody>` +
+      r.items.map((d) => `<tr><td>${esc(d.title)}</td><td class="meta">${esc(d.doc_id)}</td><td>v${d.version}</td><td>${esc(d.status)}</td>
+        <td><button type="button" class="plain" data-open="${esc(d.doc_id)}">Open</button></td></tr>`).join("") + "</tbody></table></div>";
+  } catch (e) { $("#list-out").innerHTML = msg("err", e.message); }
+}
+
+document.addEventListener("click", async (ev) => {
+  const open = ev.target.closest("[data-open]");
+  if (!open) return;
+  const id = open.dataset.open;
+  try {
+    const d = await api("GET", `/documents/${encodeURIComponent(id)}`);
+    $("#doc-out").innerHTML = `<h2>${esc(d.title)}</h2>
+      <p class="meta">${esc(d.doc_id)} · v${d.version} · ${esc(d.format)} · ${esc(d.status)} · chunks ${esc(JSON.stringify(d.chunks))}${d.duplicate_of ? " · duplicate of " + esc(d.duplicate_of) : ""}</p>
+      <div class="src">${d.text_sentences.map((s) => `<p><b>${s.index}.</b> ${esc(s.text)}</p>`).join("")}</div>
+      <form id="replace-form" class="row"><div class="grow"><label for="replace-file">Replace content (new version)</label>
+        <input type="file" id="replace-file" accept=".txt,.md,.json,.pdf"></div><button class="plain" type="submit">Update</button></form>
+      <div class="row"><button class="danger" type="button" id="del-btn">Delete document</button><span id="del-confirm"></span></div>
+      <div id="doc-msg"></div>`;
+    $("#doc-out").scrollIntoView({behavior: "smooth"});
+    $("#replace-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = $("#replace-file").files[0];
+      if (!f) { $("#doc-msg").innerHTML = msg("err", "Choose a file first."); return; }
+      const fd = new FormData(); fd.append("file", f);
+      try { const r = await api("PUT", `/documents/${encodeURIComponent(id)}`, fd); $("#doc-msg").innerHTML = msg("ok", `Now version ${r.version} (${r.status}).`); loadList(offset); }
+      catch (err) { $("#doc-msg").innerHTML = msg("err", err.message); }
+    });
+    $("#del-btn").addEventListener("click", () => {
+      $("#del-confirm").innerHTML = `Delete “${esc(d.title)}” from every index? <button class="danger" type="button" id="del-yes">Yes, delete</button> <button class="plain" type="button" id="del-no">Cancel</button>`;
+      $("#del-no").onclick = () => ($("#del-confirm").innerHTML = "");
+      $("#del-yes").onclick = async () => {
+        try { await api("DELETE", `/documents/${encodeURIComponent(id)}`); $("#doc-out").innerHTML = msg("ok", `Deleted ${id}.`); loadList(offset); loadHealth(); }
+        catch (err) { $("#doc-msg").innerHTML = msg("err", err.message); }
+      };
+    });
+  } catch (e) { $("#doc-out").innerHTML = msg("err", e.message); }
+});
+
+// ---- search -------------------------------------------------------------------------------
+$("#search-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const q = $("#search-q").value.trim();
+  if (!q) { $("#search-out").innerHTML = msg("err", "Enter a query."); return; }
+  try {
+    const r = await api("POST", "/search", {query: q, mode: $("#search-mode").value, k: +$("#search-k").value});
+    $("#search-out").innerHTML = r.hits.length ? r.hits.map((h, i) => `<div class="ev"><h3>${i + 1}. ${esc(h.title)}</h3><div>${esc(h.text)}</div>
+      <div class="meta">score ${h.score.toFixed(4)} · semantic #${h.semantic_rank ?? "–"} · keyword #${h.keyword_rank ?? "–"} · ${esc(h.chunk_id)}</div></div>`).join("")
+      : msg("info", "No results.");
+  } catch (e) { $("#search-out").innerHTML = msg("err", e.message); }
+});
+
+loadHealth();
+</script>
+</body>
+</html>
