@@ -62,11 +62,12 @@ def test_upload_errors_and_duplicates(client):
     c, _ = client
     assert upload(c, "x.exe", b"MZ").status_code == 400
     assert "invalid JSON" in upload(c, "x.json", b"{oops").json()["detail"]
-    docs = [{"title": "A", "text": "Same text."}, {"title": "B", "text": "Same text."}]
+    docs = [{"title": "Alpha report", "text": "Same text."}, {"title": "Bravo report", "text": "Same text."}]
     out = upload(c, "pair.json", json.dumps(docs).encode()).json()["documents"]
     assert [d["status"] for d in out] == ["indexed", "duplicate"]
     assert c.get("/documents", params={"status": "duplicate"}).json()["total"] == 1
-    assert c.get("/documents", params={"q": "B"}).json()["total"] == 1  # total respects the filter
+    assert c.get("/documents", params={"q": "Bravo"}).json()["total"] == 1  # total respects the filter
+    assert c.get("/documents", params={"q": "report"}).json()["total"] == 2
 
 
 def test_validation_and_health(client):
