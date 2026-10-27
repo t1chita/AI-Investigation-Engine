@@ -220,8 +220,11 @@ class Registry:
         with self.engine.connect() as conn:
             return [_row_doc(r) for r in conn.execute(q).all()]
 
-    def count_documents(self, status: str | None = None, source_type: str | None = None) -> int:
+    def count_documents(self, status: str | None = None, source_type: str | None = None, query: str = "") -> int:
         q = select(func.count()).select_from(documents)
+        if query:  # same filter as list_documents, so totals match the listing
+            like = f"%{query}%"
+            q = q.where(or_(documents.c.title.ilike(like), documents.c.doc_id.ilike(like)))
         if status:
             q = q.where(documents.c.status == status)
         if source_type:

@@ -121,7 +121,7 @@ def list_documents(
 ):
     c = C()
     docs = c.registry.list_documents(q, status, limit, offset)
-    return {"total": c.registry.count_documents(status=status), "items": [_doc_summary(d) for d in docs]}
+    return {"total": c.registry.count_documents(status=status, query=q), "items": [_doc_summary(d) for d in docs]}
 
 
 @app.get("/documents/{doc_id}")

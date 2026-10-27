@@ -66,6 +66,7 @@ def test_upload_errors_and_duplicates(client):
     out = upload(c, "pair.json", json.dumps(docs).encode()).json()["documents"]
     assert [d["status"] for d in out] == ["indexed", "duplicate"]
     assert c.get("/documents", params={"status": "duplicate"}).json()["total"] == 1
+    assert c.get("/documents", params={"q": "B"}).json()["total"] == 1  # total respects the filter
 
 
 def test_validation_and_health(client):
