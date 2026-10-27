@@ -1,0 +1,702 @@
+<title>Investigation Engine Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a visual field manual. Sticky contents on wide screens; diagrams built from boxes,
+   arrows and to-scale bars; four colour families mark the four layers of the system. */
+:root {
+  --bg: #fbfbfa; --panel: #f1f2f0; --fg: #1d2124; --muted: #5b6268; --line: #d8dbd8;
+  --accent: #0b6b62; --accent-soft: #e2f0ee;
+  --data: #2f5f9e; --data-soft: #e4ecf7;
+  --search: #0b6b62; --search-soft: #e2f0ee;
+  --llm: #6a4a9c; --llm-soft: #eee8f6;
+  --eval: #8a5a00; --eval-soft: #fbf0d9;
+  --ok: #2d6a3a; --ok-soft: #e3f1e5; --todo: #8a5a00; --todo-soft: #fbf0d9;
+  --code-bg: #eef0ee;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15181a; --panel: #1d2124; --fg: #e3e6e4; --muted: #9aa3a8; --line: #30363a;
+    --accent: #5cc4b6; --accent-soft: #173431;
+    --data: #8fb4e8; --data-soft: #1a2738; --search: #5cc4b6; --search-soft: #173431;
+    --llm: #bba1e6; --llm-soft: #282036; --eval: #e2b354; --eval-soft: #33290f;
+    --ok: #86cf94; --ok-soft: #1a2e1e; --todo: #e2b354; --todo-soft: #33290f; --code-bg: #1f2427;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15181a; --panel: #1d2124; --fg: #e3e6e4; --muted: #9aa3a8; --line: #30363a;
+  --accent: #5cc4b6; --accent-soft: #173431;
+  --data: #8fb4e8; --data-soft: #1a2738; --search: #5cc4b6; --search-soft: #173431;
+  --llm: #bba1e6; --llm-soft: #282036; --eval: #e2b354; --eval-soft: #33290f;
+  --ok: #86cf94; --ok-soft: #1a2e1e; --todo: #e2b354; --todo-soft: #33290f; --code-bg: #1f2427;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 40px; }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; font-size: 14px; }
+nav.toc p { margin: 0 0 8px; font-weight: 600; }
+nav.toc ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+nav.toc a { color: var(--muted); text-decoration: none; }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); text-decoration: underline; }
+main { min-width: 0; max-width: 900px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; font-weight: 600; text-wrap: balance; }
+h2 { font-size: 23px; margin: 56px 0 6px; padding-top: 16px; border-top: 1px solid var(--line); font-weight: 600; text-wrap: balance; }
+h2 + .sub { margin-top: 0; color: var(--muted); }
+h3 { font-size: 17px; margin: 28px 0 8px; font-weight: 600; }
+p, li { max-width: 70ch; }
+.lede { color: var(--muted); font-size: 17px; margin-top: 0; }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+pre { font-family: var(--font-mono); background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; font-size: 13.5px; line-height: 1.45; }
+.small { font-size: 13.5px; color: var(--muted); }
+
+/* colour families */
+.c-data { --c: var(--data); --cs: var(--data-soft); }
+.c-search { --c: var(--search); --cs: var(--search-soft); }
+.c-llm { --c: var(--llm); --cs: var(--llm-soft); }
+.c-eval { --c: var(--eval); --cs: var(--eval-soft); }
+.c-neutral { --c: var(--muted); --cs: var(--panel); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13.5px; color: var(--muted); margin: 8px 0 4px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 6px; vertical-align: -1px; }
+
+/* flow diagrams */
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; margin: 14px 0 6px; }
+.node { background: var(--cs); border: 1.5px solid var(--c); border-radius: 8px; padding: 8px 10px; min-width: 0; flex: 1 1 110px; max-width: 190px; }
+.node b { display: block; font-size: 14px; font-weight: 600; color: var(--c); }
+.node span { display: block; font-size: 12.5px; color: var(--fg); line-height: 1.35; margin-top: 2px; }
+.arrow { flex: 0 0 26px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 18px; }
+.arrow::before { content: "→"; }
+.flow-label { font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin: 18px 0 0; }
+.fork { display: grid; gap: 6px; flex: 1 1 140px; max-width: 200px; }
+.fork .node { max-width: none; }
+.store-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+.store { border: 1.5px dashed var(--c); background: var(--cs); border-radius: 8px; padding: 8px 12px; font-size: 13.5px; flex: 1 1 180px; }
+.store b { color: var(--c); }
+
+/* roadmap */
+.road { list-style: none; padding: 0; margin: 16px 0; position: relative; }
+.road::before { content: ""; position: absolute; left: 19px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+.road li { position: relative; padding-left: 56px; margin-bottom: 18px; max-width: none; }
+.road .dot { position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--cs); border: 2px solid var(--c); color: var(--c); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px; }
+.road h4 { margin: 0 0 2px; font-size: 16px; font-weight: 600; padding-top: 8px; }
+.road p { margin: 2px 0; font-size: 14.5px; }
+.road .why { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { font-family: var(--font-mono); font-size: 12px; padding: 2px 8px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); }
+.chip.proof { font-family: var(--font-body); background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+.chip.todo { font-family: var(--font-body); background: var(--todo-soft); border-color: transparent; color: var(--todo); }
+
+/* glossary cards */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.filters button { font: inherit; font-size: 14px; padding: 4px 12px; border-radius: 14px; border: 1.5px solid var(--c, var(--line)); background: var(--bg); color: var(--fg); cursor: pointer; }
+.filters button[aria-pressed="true"] { background: var(--cs, var(--panel)); color: var(--c, var(--fg)); font-weight: 600; }
+.filters input { font: inherit; font-size: 14px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); min-width: 0; flex: 1 1 160px; max-width: 260px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: var(--bg); min-width: 0; }
+.card h4 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+.card h4::before, .dec h4::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--c); margin-right: 7px; vertical-align: 1px; }
+.card p { margin: 0; font-size: 13.5px; }
+.card .ios { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+.card .ios::before { content: "iOS: "; font-weight: 600; }
+.count { font-size: 13px; color: var(--muted); }
+
+/* bar charts */
+.chart { margin: 12px 0 18px; }
+.bar-row { display: grid; grid-template-columns: 170px minmax(0, 1fr) 54px; gap: 10px; align-items: center; margin: 5px 0; font-size: 14px; }
+.bar-track { background: var(--panel); border-radius: 4px; height: 18px; position: relative; overflow: hidden; }
+.bar { height: 100%; background: var(--c); border-radius: 4px; }
+.bar-val { font-variant-numeric: tabular-nums; text-align: right; font-weight: 500; }
+.axis { display: grid; grid-template-columns: 170px minmax(0, 1fr) 54px; gap: 10px; font-size: 12px; color: var(--muted); }
+.axis div:nth-child(2) { display: flex; justify-content: space-between; }
+.grouped .bar-track { height: 13px; }
+.grouped .pair { margin: 8px 0; }
+.grouped .pair > div:first-child { font-size: 14px; font-weight: 500; }
+
+/* decision cards */
+.decisions { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 12px 0; }
+.dec { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.dec h4 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+.pick { display: inline-block; background: var(--cs); color: var(--c); font-weight: 600; border-radius: 12px; padding: 2px 10px; font-size: 14px; }
+.alts { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0; }
+.alt { font-size: 12.5px; border: 1px dashed var(--line); color: var(--muted); border-radius: 10px; padding: 1px 8px; }
+.dec p { margin: 4px 0 0; font-size: 13.5px; }
+.dec .when { color: var(--muted); }
+
+/* worked visuals */
+.figure { border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin: 14px 0; overflow-x: auto; }
+.figure figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.strip { position: relative; height: 26px; margin: 4px 0 2px; min-width: 520px; }
+.seg { position: absolute; top: 0; height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
+.seg.s { background: var(--data-soft); border: 1.5px solid var(--data); color: var(--data); }
+.seg.f { background: var(--search-soft); border: 1.5px solid var(--search); color: var(--search); opacity: 0.92; }
+.seg.p { background: var(--llm-soft); border: 1.5px solid var(--llm); color: var(--llm); }
+.strip-label { font-size: 12.5px; color: var(--muted); margin-top: 10px; min-width: 520px; }
+.rrf { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 12px; align-items: start; min-width: 520px; }
+.rank-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.rank-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.circle { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; background: var(--cs); color: var(--c); border: 1.5px solid var(--c); flex: none; }
+.mini-bar { height: 10px; background: var(--c); border-radius: 3px; }
+
+/* trace and status */
+.trace { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 0; }
+.trace li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; max-width: none; }
+.trace .rail { display: flex; flex-direction: column; align-items: center; }
+.trace .rail .circle { width: 32px; height: 32px; }
+.trace .rail::after { content: ""; flex: 1; width: 2px; background: var(--line); margin: 4px 0; min-height: 14px; }
+.trace li:last-child .rail::after { display: none; }
+.trace .body { padding-bottom: 14px; min-width: 0; }
+.trace .body b { display: block; }
+.trace .body p { margin: 2px 0; font-size: 14.5px; }
+.status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0; }
+.st { border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+.st.ok { background: var(--ok-soft); }
+.st.todo { background: var(--todo-soft); }
+.st b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.st.ok b { color: var(--ok); } .st.todo b { color: var(--todo); }
+.map { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); gap: 6px 4px; align-items: center; margin: 12px 0; }
+.map .l, .map .r { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; font-size: 14px; min-width: 0; }
+.map .l { background: var(--panel); }
+.map .r { border-color: var(--accent); background: var(--accent-soft); }
+.map .m { text-align: center; color: var(--muted); }
+.map .head { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+.table-wrap { overflow-x: auto; margin: 10px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 7px 9px; border-bottom: 1px solid var(--line); }
+th { background: var(--panel); font-weight: 600; }
+.checklist { list-style: none; padding: 0; counter-reset: c; display: grid; gap: 8px; }
+.checklist li { counter-increment: c; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; }
+.checklist li::before { content: counter(c); width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); border: 1.5px solid var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  nav.toc { position: static; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+}
+@media (max-width: 600px) {
+  .flow { flex-direction: column; }
+  .node, .fork { max-width: none; flex: none; }
+  .arrow { flex: none; height: 22px; }
+  .arrow::before { content: "↓"; }
+  .bar-row, .axis { grid-template-columns: 110px minmax(0, 1fr) 46px; font-size: 13px; }
+  .map { grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr); }
+}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#big">The big picture</a></li>
+    <li><a href="#ios">iOS to AI map</a></li>
+    <li><a href="#road">Build roadmap</a></li>
+    <li><a href="#words">Keywords</a></li>
+    <li><a href="#how">How the parts work</a></li>
+    <li><a href="#choices">Choices and alternatives</a></li>
+    <li><a href="#trace">One question, step by step</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#code">Reading the code</a></li>
+    <li><a href="#status">Status</a></li>
+    <li><a href="#next">Next project checklist</a></li>
+  </ol>
+</nav>
+
+<main>
+<h1>AI Investigation Engine: field guide</h1>
+<p class="lede">How the project works, the order it was built in, and why each choice was made. For an iOS developer new to AI engineering. Status: 27 October 2026.</p>
+<div class="legend">
+  <span class="c-data">Data and storage</span>
+  <span class="c-search">Search</span>
+  <span class="c-llm">LLM and answering</span>
+  <span class="c-eval">Evaluation</span>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="big">1. The big picture</h2>
+<p class="sub">Two pipelines. Slow work happens once when documents change; fast work happens per question.</p>
+
+<p class="flow-label">Ingestion: when a document is added, changed or deleted</p>
+<div class="flow">
+  <div class="node c-data"><b>File / record</b><span>.txt .md .json .pdf, or a HotpotQA passage</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-data"><b>Parse</b><span>sentences + metadata</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-data"><b>Fingerprint</b><span>SHA-256; duplicates stop here</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-data"><b>Registry</b><span>save document, version, status</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>Chunk</b><span>fixed and sentence strategies</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="fork">
+    <div class="node c-search"><b>Embed → Qdrant</b><span>meaning vectors</span></div>
+    <div class="node c-search"><b>Words → BM25</b><span>keyword index</span></div>
+  </div>
+</div>
+
+<p class="flow-label">Investigation: for every question</p>
+<div class="flow">
+  <div class="node c-neutral"><b>Question</b><span>from UI or API</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-llm"><b>Plan</b><span>LLM lists ≤ 3 searches</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>Search tool</b><span>vector + keyword, fused by RRF</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-llm"><b>Decide</b><span>search again, or answer citing E1…En</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-llm"><b>Validate</b><span>our code checks citations</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-neutral"><b>Result</b><span>answered · conflict · insufficient</span></div>
+</div>
+
+<p class="flow-label">The three stores they share</p>
+<div class="store-row">
+  <div class="store c-data"><b>Registry</b> (SQLite / Postgres): the truth. Documents, versions, sentences, chunks.</div>
+  <div class="store c-search"><b>Qdrant</b>: vectors. Rebuildable from the registry.</div>
+  <div class="store c-search"><b>BM25</b> (in memory): keyword index. Rebuilt from the registry at start-up in 3.7 s.</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="ios">2. iOS to AI map</h2>
+<p class="sub">Most of the engineering is familiar. The new parts are search and LLM behaviour.</p>
+<div class="map">
+  <div class="head">You know</div><div></div><div class="head">In this project</div>
+  <div class="l">Swift package with modules</div><div class="m">→</div><div class="r"><code>src/investigator/</code> Python package</div>
+  <div class="l"><code>Package.swift</code> + SPM</div><div class="m">→</div><div class="r"><code>pyproject.toml</code> + <code>pip</code></div>
+  <div class="l">Per-project toolchain</div><div class="m">→</div><div class="r"><code>.venv</code> virtual environment</div>
+  <div class="l"><code>struct</code></div><div class="m">→</div><div class="r"><code>@dataclass</code> in <code>models.py</code></div>
+  <div class="l">Core Data store</div><div class="m">→</div><div class="r"><code>Registry</code> (SQL tables)</div>
+  <div class="l">Repository / use-case layer</div><div class="m">→</div><div class="r"><code>DocumentService</code></div>
+  <div class="l">Backend you call with URLSession</div><div class="m">→</div><div class="r">FastAPI <code>api.py</code></div>
+  <div class="l">Quick SwiftUI prototype</div><div class="m">→</div><div class="r">Streamlit UI</div>
+  <div class="l">XCTest + mocks behind a protocol</div><div class="m">→</div><div class="r">pytest + <code>ScriptedLLM</code>, <code>HashEmbedder</code></div>
+  <div class="l"><code>.xcconfig</code> with secrets</div><div class="m">→</div><div class="r"><code>.env</code> (git-ignored)</div>
+  <div class="l">Archived build</div><div class="m">→</div><div class="r">Docker image</div>
+</div>
+<p class="small">Two real differences: Python checks types only at run time, and any object with the right method works as a "protocol" (duck typing).</p>
+
+<!-- ============================================================ -->
+<h2 id="road">3. Build roadmap</h2>
+<p class="sub">Each step depends only on the steps above it, the same rule as building components before screens. Risky unknowns (is the data usable? can we reach 50,000?) come early.</p>
+<ol class="road">
+  <li class="c-neutral"><div class="dot">0</div><h4>Environment and requirements</h4>
+    <p>Python 3.12 <code>.venv</code>, project manifest, the list of mandatory items.</p>
+    <p class="why">Why first: everything runs inside it, and the list defines "done".</p>
+    <div class="chips"><span class="chip">pyproject.toml</span><span class="chip">CLAUDE.md</span></div></li>
+  <li class="c-data"><div class="dot">1</div><h4>Inspect the data</h4>
+    <p>Count questions, passages, empties, duplicates, broken labels.</p>
+    <p class="why">Why now: the data decides the design. Found 73,700 passage copies → 66,581 distinct, 26 duplicates, 1 broken label.</p>
+    <div class="chips"><span class="chip">dataset-inspection.py</span><span class="chip proof">measured counts</span></div></li>
+  <li class="c-data"><div class="dot">2</div><h4>Define a record and its id</h4>
+    <p>One record = one distinct passage; <code>hp-</code> + hash of title; sentence numbers kept.</p>
+    <p class="why">Why now: ids flow into chunks, vectors, citations and evaluation. Like choosing primary keys before shipping.</p>
+    <div class="chips"><span class="chip">hotpotqa.py</span></div></li>
+  <li class="c-data"><div class="dot">3</div><h4>Models and registry</h4>
+    <p>Sentence, Document, Chunk, Status; two SQL tables.</p>
+    <p class="why">Why now: the shared language of every later module.</p>
+    <div class="chips"><span class="chip">models.py</span><span class="chip">registry.py</span></div></li>
+  <li class="c-data"><div class="dot">4</div><h4>Parsers and document lifecycle</h4>
+    <p>TXT/MD, JSON, PDF; add, update, delete, duplicates, retry.</p>
+    <p class="why">Why now: the write order keeps three stores consistent. Easier to get right before 66,000 documents exist.</p>
+    <div class="chips"><span class="chip">parsers.py</span><span class="chip">ingestion.py</span><span class="chip proof">failure + retry tested</span></div></li>
+  <li class="c-search"><div class="dot">5</div><h4>Two chunkers</h4>
+    <p>Fixed 64-word windows (16 overlap) and whole-sentence packing (≤ 64 words).</p>
+    <p class="why">Why now: chunks are what gets searched; the comparison is required.</p>
+    <div class="chips"><span class="chip">chunking.py</span></div></li>
+  <li class="c-search"><div class="dot">6</div><h4>Our ranking algorithms</h4>
+    <p>BM25 keyword scoring and Reciprocal Rank Fusion.</p>
+    <p class="why">Why now: pure functions, no dependencies, testable by hand. A custom algorithm is required.</p>
+    <div class="chips"><span class="chip">bm25.py</span><span class="chip">fusion.py</span><span class="chip proof">hand-computed tests</span></div></li>
+  <li class="c-search"><div class="dot">7</div><h4>Embeddings, Qdrant, hybrid search</h4>
+    <p>Semantic, keyword and hybrid modes in one <code>search()</code>.</p>
+    <p class="why">Why now: needs chunks and the ranking code.</p>
+    <div class="chips"><span class="chip">embeddings.py</span><span class="chip">vector_store.py</span><span class="chip">retrieval.py</span></div></li>
+  <li class="c-data"><div class="dot">8</div><h4>Load 66,581 records</h4>
+    <p>Batches of 1,024, resumable, with a reconciliation report.</p>
+    <p class="why">Why now: scale is the biggest risk; real data then feeds every later step. Took 6.3 minutes.</p>
+    <div class="chips"><span class="chip">bulk.py</span><span class="chip proof">0 failed, counts match</span></div></li>
+  <li class="c-llm"><div class="dot">9</div><h4>LLM client and investigation pipeline</h4>
+    <p>Plan, search tool, decide, validate; Groq and Gemini clients with retries.</p>
+    <p class="why">Why now: sits on top of search. Built against a fake LLM first, so behaviour is tested without cost.</p>
+    <div class="chips"><span class="chip">llm.py</span><span class="chip">investigate.py</span></div></li>
+  <li class="c-neutral"><div class="dot">10</div><h4>API, then UI</h4>
+    <p>FastAPI endpoints; Streamlit talks to them over HTTP like an app to a backend.</p>
+    <p class="why">Why now: they only expose what already works.</p>
+    <div class="chips"><span class="chip">api.py</span><span class="chip">streamlit_app.py</span></div></li>
+  <li class="c-eval"><div class="dot">11</div><h4>Evaluation</h4>
+    <p>46 questions in 5 categories; retrieval on 500 more.</p>
+    <p class="why">Why now: you can only measure a working system.</p>
+    <div class="chips"><span class="chip">evaluation.py</span><span class="chip proof">two runs measured</span></div></li>
+  <li class="c-neutral"><div class="dot">12</div><h4>Deploy</h4>
+    <p>Hugging Face Spaces + Neon + Qdrant Cloud.</p>
+    <p class="why">Why last: deploying unfinished work means redeploying again and again; needs your accounts.</p>
+    <div class="chips"><span class="chip">Dockerfile</span><span class="chip todo">not done</span></div></li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="words">4. Keywords</h2>
+<p class="sub">Filter by layer or type to search. Each card has the plain meaning and an iOS comparison where one helps.</p>
+<div class="filters" role="group" aria-label="Filter keywords">
+  <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+  <button type="button" id="f-data" data-f="data" class="c-data" aria-pressed="false">Data</button>
+  <button type="button" id="f-search" data-f="search" class="c-search" aria-pressed="false">Search</button>
+  <button type="button" id="f-llm" data-f="llm" class="c-llm" aria-pressed="false">LLM</button>
+  <button type="button" id="f-eval" data-f="eval" class="c-eval" aria-pressed="false">Evaluation</button>
+  <input id="f-text" type="search" placeholder="Search a term" aria-label="Search a term">
+  <span class="count" id="f-count"></span>
+</div>
+<div class="cards" id="cards">
+  <div class="card c-data" data-k="data"><h4>Corpus</h4><p>All documents the system can search. Ours: 66,581 passages + 17 synthetic.</p></div>
+  <div class="card c-data" data-k="data"><h4>Source record</h4><p>One independent document. The "50,000" counts these, not questions or chunks.</p></div>
+  <div class="card c-data" data-k="data"><h4>Metadata</h4><p>Facts about a document that are not its text: title, pages, version, status.</p></div>
+  <div class="card c-data" data-k="data"><h4>Normalisation</h4><p>Removing unimportant differences before comparing. We collapse whitespace.</p></div>
+  <div class="card c-data" data-k="data"><h4>Hash / SHA-256</h4><p>A 64-character code from text. Same text, same code: exact duplicate.</p><p class="ios">a file checksum</p></div>
+  <div class="card c-data" data-k="data"><h4>Deduplication</h4><p>Keep repeated content once; copies point to the original.</p></div>
+  <div class="card c-data" data-k="data"><h4>Provenance</h4><p>Where text came from: doc id, version, sentence numbers, page. Citations need it.</p></div>
+  <div class="card c-data" data-k="data"><h4>Synthetic data</h4><p>Test data we wrote; always labelled synthetic.</p></div>
+  <div class="card c-search" data-k="search"><h4>Chunk</h4><p>A small piece of a document. Search returns chunks, so the LLM reads only what matters.</p><p class="ios">cell reuse: small pieces, not the whole list</p></div>
+  <div class="card c-search" data-k="search"><h4>Embedding</h4><p>384 numbers describing a text's meaning. Similar meaning → nearby numbers.</p></div>
+  <div class="card c-search" data-k="search"><h4>Vector</h4><p>That list of numbers. Vector search = find the stored vectors nearest the question's.</p></div>
+  <div class="card c-search" data-k="search"><h4>Cosine similarity</h4><p>Closeness as an angle: 1 same meaning, 0 unrelated.</p></div>
+  <div class="card c-search" data-k="search"><h4>Vector database</h4><p>A database that finds nearest vectors fast. Ours: Qdrant.</p></div>
+  <div class="card c-search" data-k="search"><h4>Semantic search</h4><p>Search by meaning. Good with paraphrases, weak with exact ids and names.</p></div>
+  <div class="card c-search" data-k="search"><h4>Keyword search</h4><p>Search by matching words. Good with <code>INC-7781</code> and names, blind to synonyms.</p></div>
+  <div class="card c-search" data-k="search"><h4>Stop words</h4><p>Common words ("the", "of") ignored by keyword search.</p></div>
+  <div class="card c-search" data-k="search"><h4>Inverted index</h4><p>Word → list of chunks containing it. Skips everything irrelevant.</p><p class="ios">a dictionary keyed by word</p></div>
+  <div class="card c-search" data-k="search"><h4>BM25</h4><p>Keyword scoring: rare words count more, repeats help less and less, long chunks are penalised a bit. Our own code.</p></div>
+  <div class="card c-search" data-k="search"><h4>Hybrid search</h4><p>Semantic + keyword together, each covering the other's blind spot.</p></div>
+  <div class="card c-search" data-k="search"><h4>RRF</h4><p>Merges ranked lists by adding 1 / (60 + rank). Uses positions, not scores. Our own code.</p></div>
+  <div class="card c-search" data-k="search"><h4>Top-K</h4><p>The first K results.</p></div>
+  <div class="card c-search" data-k="search"><h4>Re-ranker</h4><p>A slower second model that re-scores the top results. Not built (bonus).</p></div>
+  <div class="card c-llm" data-k="llm"><h4>LLM</h4><p>A model that writes text from instructions and context. Ours: gpt-oss-120b on Groq.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Token</h4><p>The unit an LLM reads and bills in, about ¾ of a word.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Context window</h4><p>How much text fits in one request. Why we send ≤ 700 characters per evidence item.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Prompt</h4><p>What we send: fixed rules (system) + question and evidence (user).</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Hallucination</h4><p>A plausible statement not supported by the evidence. The design exists to block it.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>RAG</h4><p>Retrieval-Augmented Generation: search first, then answer from what was found.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Grounding</h4><p>Making the answer depend only on the supplied evidence.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Multi-hop</h4><p>Needs two facts where the second depends on the first.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Citation</h4><p>Evidence id (E1…) on a claim. Fake ids are dropped by our code.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Abstention</h4><p>Saying "insufficient evidence" instead of guessing.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Tool calling</h4><p>The LLM asks the program to run a function (our <code>search</code>) via a JSON action we validate.</p><p class="ios">a delegate callback the app chooses to honour</p></div>
+  <div class="card c-llm" data-k="llm"><h4>JSON mode</h4><p>Forces the LLM to reply with valid JSON so code can parse it.</p><p class="ios">Codable decode</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Temperature</h4><p>Randomness. We use 0 for repeatable answers.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Rate limit</h4><p>Provider caps: 1,000 requests/day, 8,000 tokens/minute on your key. HTTP 429 → wait and retry.</p></div>
+  <div class="card c-llm" data-k="llm"><h4>Prompt injection</h4><p>Document text that tries to command the LLM. Our rules say evidence is data.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>Gold / ground truth</h4><p>The known right answer and right documents for a test question.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>Recall@K</h4><p>Share of needed documents found in the top K.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>MRR</h4><p>1 ÷ position of the first right document, averaged. Rewards ranking it first.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>EM and F1</h4><p>Exact answer match, and partial credit for shared words.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>Answer correctness</h4><p>Right answer; or "insufficient" when unanswerable; or "conflict" citing both sides.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>Citation precision</h4><p>Share of cited documents that are actually relevant.</p></div>
+  <div class="card c-eval" data-k="eval"><h4>Configuration</h4><p>One combination of settings. We compare two.</p></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="how">5. How the parts work</h2>
+<p class="sub">Four small visuals for the four ideas that are new.</p>
+
+<h3>Chunking: two ways to cut the same passage</h3>
+<figure class="figure" style="margin:0">
+  <div class="strip-label">A 95-word passage with three sentences (30, 25 and 40 words)</div>
+  <div class="strip">
+    <div class="seg s" style="left:0%;width:31.6%">S0 · 30</div>
+    <div class="seg s" style="left:31.6%;width:26.3%">S1 · 25</div>
+    <div class="seg s" style="left:57.9%;width:42.1%">S2 · 40</div>
+  </div>
+  <div class="strip-label">fixed: 64-word windows, next starts 48 words later (16 overlap)</div>
+  <div class="strip">
+    <div class="seg f" style="left:0%;width:67.4%">chunk 0 · words 0–63</div>
+  </div>
+  <div class="strip">
+    <div class="seg f" style="left:50.5%;width:49.5%">chunk 1 · words 48–94</div>
+  </div>
+  <div class="strip-label">sentence: whole sentences until the next would pass 64 words</div>
+  <div class="strip">
+    <div class="seg p" style="left:0%;width:57.9%">chunk 0 · S0+S1 · 55 words</div>
+    <div class="seg p" style="left:57.9%;width:42.1%">chunk 1 · S2 · 40</div>
+  </div>
+  <figcaption>Fixed chunk 0 cuts S2 in the middle; sentence chunks always end at a full stop, so citations point at whole sentences.</figcaption>
+</figure>
+
+<h3>Embeddings: meaning as position</h3>
+<figure class="figure" style="margin:0">
+<svg viewBox="0 0 640 250" width="100%" role="img" aria-label="Illustration: phrases with similar meaning sit close together" style="min-width:520px">
+  <g font-family="IBM Plex Sans, sans-serif" font-size="13">
+    <circle cx="120" cy="70" r="7" fill="var(--search)"/><text x="132" y="74" fill="var(--fg)">payment outage</text>
+    <circle cx="150" cy="105" r="7" fill="var(--search)"/><text x="162" y="109" fill="var(--fg)">checkout errors</text>
+    <circle cx="95" cy="130" r="7" fill="var(--search)"/><text x="107" y="134" fill="var(--fg)">card declines</text>
+    <circle cx="430" cy="60" r="7" fill="var(--llm)"/><text x="442" y="64" fill="var(--fg)">warehouse fire</text>
+    <circle cx="470" cy="95" r="7" fill="var(--llm)"/><text x="482" y="99" fill="var(--fg)">alarm sounded</text>
+    <circle cx="300" cy="200" r="7" fill="var(--data)"/><text x="312" y="204" fill="var(--fg)">contract renewal</text>
+    <circle cx="260" cy="225" r="7" fill="var(--data)"/><text x="272" y="229" fill="var(--fg)">liability cap</text>
+    <circle cx="130" cy="185" r="9" fill="none" stroke="var(--eval)" stroke-width="2.5"/>
+    <text x="146" y="189" fill="var(--eval)" font-weight="600">question: "why did checkout fail?"</text>
+    <line x1="130" y1="176" x2="148" y2="114" stroke="var(--eval)" stroke-dasharray="4 3" stroke-width="1.5"/>
+  </g>
+</svg>
+<figcaption>Illustration only: real embeddings have 384 dimensions, drawn here as 2. The question has no word in common with "checkout errors" except "checkout", yet lands next to it. Search returns the nearest dots.</figcaption>
+</figure>
+
+<h3>BM25 in one line</h3>
+<div class="flow">
+  <div class="node c-search"><b>Rare word</b><span>"Whitfield" in 1 chunk → high weight</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>Repeats</b><span>2nd and 3rd mention add less each time</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>Length</b><span>long chunks slightly penalised</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-neutral"><b>Score</b><span>sum over query words</span></div>
+</div>
+
+<h3>RRF: merging two rankings</h3>
+<figure class="figure" style="margin:0">
+<div class="rrf">
+  <div class="c-search"><b>Semantic list</b>
+    <ol class="rank-list"><li><span class="circle">1</span>A</li><li><span class="circle">2</span>B</li><li><span class="circle">3</span>C</li></ol></div>
+  <div class="c-search"><b>Keyword list</b>
+    <ol class="rank-list"><li><span class="circle">1</span>B</li><li><span class="circle">2</span>D</li></ol></div>
+  <div class="c-llm"><b>Fused (k = 60)</b>
+    <ol class="rank-list">
+      <li><span class="circle">1</span>B <span style="flex:1"><span class="mini-bar" style="display:block;width:100%"></span></span> .0325</li>
+      <li><span class="circle">2</span>A <span style="flex:1"><span class="mini-bar" style="display:block;width:50.4%"></span></span> .0164</li>
+      <li><span class="circle">3</span>D <span style="flex:1"><span class="mini-bar" style="display:block;width:49.6%"></span></span> .0161</li>
+      <li><span class="circle">4</span>C <span style="flex:1"><span class="mini-bar" style="display:block;width:48.8%"></span></span> .0159</li>
+    </ol></div>
+</div>
+<figcaption>B = 1/62 + 1/61: found by both lists, so it wins. Scores from different methods are never added directly; only positions are.</figcaption>
+</figure>
+
+<!-- ============================================================ -->
+<h2 id="choices">6. Choices and alternatives</h2>
+<p class="sub">Filled pill = what we picked. Dashed = alternatives. Last line = when the alternative is the better choice.</p>
+<div class="decisions">
+  <div class="dec c-neutral"><h4>Language</h4><span class="pick">Python</span>
+    <div class="alts"><span class="alt">TypeScript</span><span class="alt">Go</span><span class="alt">Swift</span></div>
+    <p>Required by the assignment; nearly every AI library is Python-first.</p></div>
+  <div class="dec c-neutral"><h4>Backend</h4><span class="pick">FastAPI</span>
+    <div class="alts"><span class="alt">Flask</span><span class="alt">Django</span></div>
+    <p>Validation and <code>/docs</code> for free, little code.</p><p class="when">Django when you need users, admin and a full ORM.</p></div>
+  <div class="dec c-neutral"><h4>UI</h4><span class="pick">Streamlit</span>
+    <div class="alts"><span class="alt">Gradio</span><span class="alt">React</span><span class="alt">SwiftUI</span></div>
+    <p>Function over looks; pure Python.</p><p class="when">React or SwiftUI for a real product.</p></div>
+  <div class="dec c-neutral"><h4>RAG framework</h4><span class="pick">None, own code</span>
+    <div class="alts"><span class="alt">LangChain</span><span class="alt">LlamaIndex</span><span class="alt">Haystack</span></div>
+    <p>Required custom logic; you must explain every step.</p><p class="when">Frameworks on large projects where speed matters more than control.</p></div>
+  <div class="dec c-data"><h4>Dataset</h4><span class="pick">HotpotQA</span>
+    <div class="alts"><span class="alt">2WikiMultihopQA</span><span class="alt">RAGBench</span><span class="alt">post-mortems</span></div>
+    <p>Multi-hop questions with sentence-level gold evidence.</p><p class="when">Post-mortems look closer to real incidents but have no gold questions.</p></div>
+  <div class="dec c-data"><h4>Corpus split</h4><span class="pick">validation, 66,581</span>
+    <div class="alts"><span class="alt">sample of train (481,844)</span></div>
+    <p>Test questions' evidence is in the corpus by construction; no sampling.</p></div>
+  <div class="dec c-data"><h4>Duplicates</h4><span class="pick">exact SHA-256</span>
+    <div class="alts"><span class="alt">MinHash</span><span class="alt">embedding similarity</span></div>
+    <p>Simple, testable, no threshold.</p><p class="when">Near-duplicate methods when copies are reworded.</p></div>
+  <div class="dec c-data"><h4>Registry</h4><span class="pick">SQLite → Postgres</span>
+    <div class="alts"><span class="alt">MongoDB</span><span class="alt">JSON files</span></div>
+    <p>Tables fit; free hosts lose local files on restart.</p></div>
+  <div class="dec c-search"><h4>Vector DB</h4><span class="pick">Qdrant</span>
+    <div class="alts"><span class="alt">pgvector</span><span class="alt">Chroma</span><span class="alt">Pinecone</span><span class="alt">Weaviate</span></div>
+    <p>Free 1 GB cloud, same API locally, delete by filter.</p><p class="when">pgvector to keep everything in one Postgres.</p></div>
+  <div class="dec c-search"><h4>Keyword index</h4><span class="pick">own BM25</span>
+    <div class="alts"><span class="alt">Postgres FTS</span><span class="alt">Elasticsearch</span><span class="alt">rank_bm25</span></div>
+    <p>Required custom algorithm; rebuilds from the registry in 3.7 s.</p><p class="when">Elasticsearch for millions of documents.</p></div>
+  <div class="dec c-search"><h4>Chunking</h4><span class="pick">sentence ≤ 64 words</span>
+    <div class="alts"><span class="alt">fixed 64/16 (compared)</span><span class="alt">recursive</span><span class="alt">semantic</span></div>
+    <p>Clean citations; passages are short (median 78 words).</p><p class="when">Recursive or semantic for long, mixed documents.</p></div>
+  <div class="dec c-search"><h4>Embedding model</h4><span class="pick">MiniLM-L6 (384)</span>
+    <div class="alts"><span class="alt">bge-base</span><span class="alt">e5-base</span><span class="alt">API embeddings</span></div>
+    <p>Runs on a laptop and free CPU; fits the free vector storage.</p><p class="when">A stronger model: BM25 beats MiniLM here.</p></div>
+  <div class="dec c-search"><h4>Fusion</h4><span class="pick">RRF, k = 60</span>
+    <div class="alts"><span class="alt">weighted score sum</span><span class="alt">cross-encoder re-ranker</span></div>
+    <p>No score normalisation or tuning needed.</p><p class="when">A re-ranker when accuracy matters more than speed.</p></div>
+  <div class="dec c-llm"><h4>RAG design</h4><span class="pick">bounded multi-step</span>
+    <div class="alts"><span class="alt">single-shot</span><span class="alt">open agent</span><span class="alt">multi-agent</span></div>
+    <p>Handles multi-hop with capped cost (≤ 3 plan searches, ≤ 2 follow-ups, 1 second chance).</p></div>
+  <div class="dec c-llm"><h4>Tool calling</h4><span class="pick">JSON action</span>
+    <div class="alts"><span class="alt">native function calling</span></div>
+    <p>Same on every provider; our code validates it.</p></div>
+  <div class="dec c-llm"><h4>LLM provider</h4><span class="pick">Groq · gpt-oss-120b</span>
+    <div class="alts"><span class="alt">Gemini (402: no credits)</span><span class="alt">OpenAI</span><span class="alt">local Ollama</span></div>
+    <p>Free and fast; switching was a <code>.env</code> change only.</p></div>
+  <div class="dec c-neutral"><h4>Hosting</h4><span class="pick">HF Spaces + Neon + Qdrant Cloud</span>
+    <div class="alts"><span class="alt">Render</span><span class="alt">Koyeb</span><span class="alt">Oracle Cloud</span></div>
+    <p>Render's 512 MB RAM is too small for the model.</p></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="trace">7. One question, step by step</h2>
+<p class="sub">"When did the fire alarm sound at the Pier 9 warehouse?" Two sources disagree, so the right result is a conflict.</p>
+<ol class="trace">
+  <li class="c-neutral"><div class="rail"><span class="circle">1</span></div><div class="body"><b>API receives it</b><p><code>POST /investigate</code>; Pydantic rejects empty or too-long questions.</p></div></li>
+  <li class="c-llm"><div class="rail"><span class="circle">2</span></div><div class="body"><b>Plan</b><p>LLM returns up to 3 search queries as JSON. If the call fails, we search the question alone.</p></div></li>
+  <li class="c-search"><div class="rail"><span class="circle">3</span></div><div class="body"><b>Search tool</b><p>Embed → Qdrant top 50. Tokens <code>fire alarm sound pier 9 warehouse</code> → BM25 top 50. RRF → best 5. Text loaded from the registry.</p></div></li>
+  <li class="c-search"><div class="rail"><span class="circle">4</span></div><div class="body"><b>Evidence</b><p>E1 Fire dispatch log (21:40) · E2 Harbour Daily (22:35) · E3 Insurer notice · then unrelated fires.</p></div></li>
+  <li class="c-llm"><div class="rail"><span class="circle">5</span></div><div class="body"><b>Decide</b><p>LLM replies <code>{"action": "answer", "status": "conflict", …}</code> citing E1 and E2, or <code>{"action": "search"}</code> for more.</p></div></li>
+  <li class="c-llm"><div class="rail"><span class="circle">6</span></div><div class="body"><b>Second chance</b><p>Only if it said "insufficient": it must name one more search first.</p></div></li>
+  <li class="c-llm"><div class="rail"><span class="circle">7</span></div><div class="body"><b>Validate</b><p>Unknown citations dropped; uncited answer → insufficient; conflict needs two cited items.</p></div></li>
+  <li class="c-neutral"><div class="rail"><span class="circle">8</span></div><div class="body"><b>Result</b><p>Status, answer, claims, conflicts, all evidence and the full trace. The UI highlights cited sentences in the source.</p></div></li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="results">8. Results</h2>
+<p class="sub">All bars are drawn to scale from 0 to 1.</p>
+
+<h3>Retrieval: Recall@10 on 500 HotpotQA questions (no LLM)</h3>
+<div class="chart">
+  <div class="bar-row c-search"><span>sentence · semantic</span><div class="bar-track"><div class="bar" style="width:68.4%"></div></div><span class="bar-val">0.684</span></div>
+  <div class="bar-row c-search"><span>sentence · keyword</span><div class="bar-track"><div class="bar" style="width:77.3%"></div></div><span class="bar-val">0.773</span></div>
+  <div class="bar-row c-llm"><span><b>sentence · hybrid</b></span><div class="bar-track"><div class="bar" style="width:79.7%"></div></div><span class="bar-val">0.797</span></div>
+  <div class="bar-row c-search"><span>fixed · semantic</span><div class="bar-track"><div class="bar" style="width:68.9%"></div></div><span class="bar-val">0.689</span></div>
+  <div class="bar-row c-search"><span>fixed · keyword</span><div class="bar-track"><div class="bar" style="width:76.6%"></div></div><span class="bar-val">0.766</span></div>
+  <div class="bar-row c-llm"><span><b>fixed · hybrid</b></span><div class="bar-track"><div class="bar" style="width:78.1%"></div></div><span class="bar-val">0.781</span></div>
+  <div class="axis"><div></div><div><span>0</span><span>0.5</span><span>1</span></div><div></div></div>
+</div>
+<p class="small">Hybrid wins with both chunkers. Chunking barely matters here because passages are short.</p>
+
+<h3>Answers: correctness by category, 46 questions (run 1)</h3>
+<div class="legend"><span class="c-llm">sentence · hybrid</span><span class="c-search">fixed · semantic</span></div>
+<div class="chart grouped">
+  <div class="pair"><div>Overall</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:71.7%"></div></div><span class="bar-val">0.717</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:67.4%"></div></div><span class="bar-val">0.674</span></div></div>
+  <div class="pair"><div>Simple (10)</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span class="bar-val">1.00</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:90%"></div></div><span class="bar-val">0.90</span></div></div>
+  <div class="pair"><div>Multi-step (10)</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:40%"></div></div><span class="bar-val">0.40</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:30%"></div></div><span class="bar-val">0.30</span></div></div>
+  <div class="pair"><div>Multi-document (10)</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:60%"></div></div><span class="bar-val">0.60</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:70%"></div></div><span class="bar-val">0.70</span></div></div>
+  <div class="pair"><div>Unanswerable (8)</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:87.5%"></div></div><span class="bar-val">0.875</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:87.5%"></div></div><span class="bar-val">0.875</span></div></div>
+  <div class="pair"><div>Contradictory (8)</div>
+    <div class="bar-row c-llm"><span class="small">sentence · hybrid</span><div class="bar-track"><div class="bar" style="width:75%"></div></div><span class="bar-val">0.75</span></div>
+    <div class="bar-row c-search"><span class="small">fixed · semantic</span><div class="bar-track"><div class="bar" style="width:62.5%"></div></div><span class="bar-val">0.625</span></div></div>
+</div>
+
+<h3>Why the 13 run-1 failures happened</h3>
+<div class="chart">
+  <div class="bar-row c-eval"><span>grading / label issue</span><div class="bar-track"><div class="bar" style="width:38.5%"></div></div><span class="bar-val">5</span></div>
+  <div class="bar-row c-search"><span>retrieval miss</span><div class="bar-track"><div class="bar" style="width:30.8%"></div></div><span class="bar-val">4</span></div>
+  <div class="bar-row c-llm"><span>model mistake</span><div class="bar-track"><div class="bar" style="width:15.4%"></div></div><span class="bar-val">2</span></div>
+  <div class="bar-row c-llm"><span>skipped hop</span><div class="bar-track"><div class="bar" style="width:7.7%"></div></div><span class="bar-val">1</span></div>
+  <div class="bar-row c-eval"><span>missed conflict</span><div class="bar-track"><div class="bar" style="width:7.7%"></div></div><span class="bar-val">1</span></div>
+  <div class="axis"><div></div><div><span>0</span><span>share of 13</span><span></span></div><div></div></div>
+</div>
+<p class="small">Fixes now in the code: follow-up searches get reserved evidence slots, the model gets a second chance before abstaining, and the two weak synthetic conflicts were rewritten. Run 2 is measuring the effect; its numbers will replace this note.</p>
+
+<!-- ============================================================ -->
+<h2 id="code">9. Reading the code</h2>
+<p class="sub">Read in this order; run the matching test after each file (<code>pytest tests/test_ranking.py -v</code>).</p>
+<div class="flow">
+  <div class="node c-data"><b>1 · models.py, text.py</b><span>data shapes, hashing, tokens</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-data"><b>2 · parsers.py</b><span>3 formats, readable errors</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>3 · chunking.py</b><span>sentence spans kept</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>4 · bm25.py, fusion.py</b><span>formulas in docstrings</span></div>
+</div>
+<div class="flow">
+  <div class="node c-data"><b>5 · registry.py</b><span>two tables</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-search"><b>6 · retrieval.py</b><span>three search modes</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-data"><b>7 · ingestion.py, bulk.py</b><span>write order, failures</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-llm"><b>8 · llm.py</b><span>what gets retried</span></div>
+</div>
+<div class="flow">
+  <div class="node c-llm"><b>9 · investigate.py</b><span>run → second chance → validate</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-neutral"><b>10 · api.py, UI</b><span>thin layers</span></div>
+  <div class="arrow" aria-hidden="true"></div>
+  <div class="node c-eval"><b>11 · evaluation.py</b><span>each metric function</span></div>
+</div>
+
+<h3>Exercises that build control</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Exercise</th><th>Touches</th><th>How you know it worked</th></tr></thead>
+<tbody>
+<tr><td>Rank <code>[A,B,C]</code> + <code>[C,A]</code> with RRF on paper, then add it as a test</td><td><code>test_ranking.py</code></td><td>test passes</td></tr>
+<tr><td>Set RRF <code>k=10</code>; predict, then measure</td><td><code>retrieval.py</code></td><td>Recall@10 vs 0.797</td></tr>
+<tr><td>BM25 <code>b=0.3</code> (less length penalty)</td><td><code>bm25.py</code></td><td>retrieval table</td></tr>
+<tr><td>Add a CSV parser (<code>title,text</code> per row)</td><td><code>parsers.py</code></td><td>new tests for valid and broken CSV</td></tr>
+<tr><td>Chunk size 40 words</td><td><code>chunking.py</code></td><td>chunk counts in <code>GET /documents/{id}</code></td></tr>
+<tr><td>Wrong LLM key, then trace the error to the screen</td><td><code>llm.py</code> → UI</td><td>clear error, evidence still shown</td></tr>
+<tr><td>Add a <code>read_document</code> tool</td><td><code>investigate.py</code></td><td>test with <code>ScriptedLLM</code></td></tr>
+</tbody></table></div>
+<pre>source .venv/bin/activate
+pytest                                   # all tests, under a second
+uvicorn investigator.api:app --port 8000 # then open http://localhost:8000/docs
+streamlit run app/streamlit_app.py       # UI on http://localhost:8501</pre>
+
+<!-- ============================================================ -->
+<h2 id="status">10. Status</h2>
+<div class="status-grid">
+  <div class="st ok"><b>Done</b>3 formats, metadata, chunking, duplicates, add/update/delete</div>
+  <div class="st ok"><b>Done</b>Vector DB, embeddings, hybrid search, own BM25 + RRF</div>
+  <div class="st ok"><b>Done</b>66,581 records processed and reconciled</div>
+  <div class="st ok"><b>Done</b>Multi-step RAG, citations, conflicts, abstention, tool calls</div>
+  <div class="st ok"><b>Done</b>API and UI, tested locally</div>
+  <div class="st ok"><b>Done</b>46-question evaluation, 2 configurations</div>
+  <div class="st todo"><b>To do</b>Public URL + data surviving a restart</div>
+  <div class="st todo"><b>To do</b>AI usage report</div>
+  <div class="st todo"><b>To do</b>Commit and push to GitHub</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="next">11. Next project checklist</h2>
+<ol class="checklist">
+  <li><span>List requirements and what will prove each one.</span></li>
+  <li><span>Inspect the data with a throwaway script before designing.</span></li>
+  <li><span>Decide what one record is and its id; keep sentence and page positions.</span></li>
+  <li><span>One store is the truth; every index can be rebuilt from it.</span></li>
+  <li><span>Fixed write order + statuses, so failures leave nothing half-searchable.</span></li>
+  <li><span>Start with keyword search as the baseline; add semantic; fuse.</span></li>
+  <li><span>LLM behind one tiny interface; develop against a fake; validate its JSON in code.</span></li>
+  <li><span>Build evaluation early: retrieval metrics first (no LLM cost), answers second.</span></li>
+  <li><span>Change one setting at a time and keep the numbers and failure examples.</span></li>
+  <li><span>Deploy last, with persistent storage and secrets outside the code.</span></li>
+</ol>
+</main>
+</div>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  var input = document.getElementById('f-text');
+  var cards = document.querySelectorAll('#cards .card');
+  var count = document.getElementById('f-count');
+  var current = 'all';
+  function apply() {
+    var q = (input.value || '').trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var ok = (current === 'all' || c.dataset.k === current) && (!q || c.textContent.toLowerCase().indexOf(q) !== -1);
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    count.textContent = shown + ' of ' + cards.length + ' terms';
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      current = b.dataset.f;
+      buttons.forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      apply();
+    });
+  });
+  input.addEventListener('input', apply);
+  apply();
+})();
+</script>

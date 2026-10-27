@@ -1,0 +1,104 @@
+[
+  {
+    "doc_id": "syn-chg-0412",
+    "title": "Change record CHG-0412: payments-api v2.18.0",
+    "text": "Change CHG-0412 was deployed on 2026-03-03 at 14:05 UTC. It released payments-api version v2.18.0 to production. The release lowered the database connection pool setting pool.max from 80 to 20 to reduce idle connections. The change was approved by Dana Whitfield, payments platform lead. Rollback plan: redeploy v2.17.3.",
+    "metadata": {"synthetic": true, "kind": "change log", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-chg-0415",
+    "title": "Change record CHG-0415: CDN cache TTL",
+    "text": "Change CHG-0415 was applied on 2026-03-03 at 15:30 UTC. It raised the CDN cache TTL for static web assets from 1 hour to 6 hours. No backend services or databases were modified by this change. The change was approved by Omar Reyes, web platform engineer.",
+    "metadata": {"synthetic": true, "kind": "change log", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-inc-7781",
+    "title": "Incident report INC-7781: payment processing outage",
+    "text": "Incident INC-7781 began on 2026-03-03 at 16:10 UTC when checkout requests started timing out. The root cause was database connection pool exhaustion in payments-api after change CHG-0412 reduced pool.max to 20. Peak traffic needed more connections than the pool allowed. The on-call team rolled payments-api back to v2.17.3 at 17:02 UTC, and error rates returned to normal by 17:15 UTC.",
+    "metadata": {"synthetic": true, "kind": "incident report", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-pm-7781",
+    "title": "Postmortem INC-7781: affected services",
+    "text": "This postmortem covers the March 3 payment processing outage, INC-7781. The checkout-service and the refund-service failed for most requests during the incident. The merchant-dashboard stayed available but showed stale payment totals. The payouts service was not affected because it uses a separate database. Action item: add a load test for pool settings before release.",
+    "metadata": {"synthetic": true, "kind": "postmortem", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-status-0303",
+    "title": "Larkspur Pay status page, 3 March 2026",
+    "text": "Investigating: we are seeing elevated checkout errors since 16:25 UTC. Update 17:20 UTC: payments are processing normally again. We apologise for the disruption.",
+    "metadata": {"synthetic": true, "kind": "status page", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-runbook-pool",
+    "title": "Runbook: payments-api database pool sizing",
+    "text": "The payments-api database pool must keep at least 60 connections at peak traffic. Values below 40 have caused request queueing in load tests. Any change to pool.max requires a load test sign-off from the database team.",
+    "metadata": {"synthetic": true, "kind": "runbook", "company": "Larkspur Pay"}
+  },
+  {
+    "doc_id": "syn-fire-dispatch",
+    "title": "Fire dispatch log: Pier 9 warehouse",
+    "text": "Dispatch log for the Pier 9 warehouse fire on 2026-02-14. The automatic fire alarm sounded at 21:40. Engine companies 4 and 7 arrived at 21:52. The fire was declared contained at 23:10. No injuries were reported.",
+    "metadata": {"synthetic": true, "kind": "dispatch log", "location": "Pier 9"}
+  },
+  {
+    "doc_id": "syn-fire-news",
+    "title": "Harbour Daily: fire at Pier 9 warehouse",
+    "text": "A fire broke out at the Pier 9 warehouse on the night of 14 February. Witnesses said the alarm sounded at 22:35. Firefighters had the blaze contained at 00:20. One firefighter was treated for smoke inhalation at the scene.",
+    "metadata": {"synthetic": true, "kind": "news article", "location": "Pier 9"}
+  },
+  {
+    "doc_id": "syn-fire-insurer",
+    "title": "Insurer notice: Pier 9 warehouse claim",
+    "text": "The owner of the Pier 9 warehouse filed a property claim on 2026-02-16. The preliminary loss estimate is 1.2 million EUR. The cause of the fire is still under investigation and has not been determined.",
+    "metadata": {"synthetic": true, "kind": "insurance notice", "location": "Pier 9"}
+  },
+  {
+    "doc_id": "syn-meridian-draft",
+    "title": "Meridian Freight contract renewal draft v3",
+    "text": "Renewal draft v3 for the Meridian Freight logistics contract. The proposed term is 24 months with a total value of 410,000 EUR. The draft was sent for internal approval on 2026-02-11. Clause 7 sets the liability cap at 150,000 EUR.",
+    "metadata": {"synthetic": true, "kind": "contract draft", "company": "Meridian Freight"}
+  },
+  {
+    "doc_id": "syn-meridian-email",
+    "title": "Email: Meridian Freight renewal review",
+    "text": "Procurement asked the legal team to review clause 7 of the Meridian Freight renewal before approval. Legal replied that the liability cap should be discussed with finance. The thread ends without a decision.",
+    "metadata": {"synthetic": true, "kind": "email", "company": "Meridian Freight"}
+  },
+  {
+    "doc_id": "syn-nw-status",
+    "title": "Northwind Cloud status: eu-west-2 incident",
+    "text": "Northwind Cloud resolved an incident in region eu-west-2 on 2026-04-21. All services, including block storage, were fully restored at 09:58 UTC. The outage lasted 46 minutes in total, from 09:12 to 09:58 UTC. The cause was a power fault in one data hall.",
+    "metadata": {"synthetic": true, "kind": "status page", "company": "Northwind Cloud"}
+  },
+  {
+    "doc_id": "syn-nw-rca",
+    "title": "Northwind Cloud root cause analysis: eu-west-2 power fault",
+    "text": "Root cause analysis for the 2026-04-21 power fault in eu-west-2. Power was lost to one data hall at 09:12 UTC. Compute came back first, but block storage needed a full resynchronisation. Full recovery of all services was reached at 11:40 UTC, 2 hours and 28 minutes after the fault.",
+    "metadata": {"synthetic": true, "kind": "root cause analysis", "company": "Northwind Cloud"}
+  },
+  {
+    "doc_id": "syn-hal-alert",
+    "title": "Halcyon Labs security alert SEC-221",
+    "text": "Security alert SEC-221 was raised on 2026-04-02 for credential stuffing against the Halcyon login API. The attack targeted 3,140 accounts from a rotating pool of IP addresses. Multi-factor authentication blocked the attempts and no accounts were compromised.",
+    "metadata": {"synthetic": true, "kind": "security alert", "company": "Halcyon Labs"}
+  },
+  {
+    "doc_id": "syn-hal-final",
+    "title": "Halcyon Labs final report SEC-221",
+    "text": "Final report for SEC-221. Log review found that 12 accounts without multi-factor authentication were compromised during the credential stuffing attack. Passwords for those accounts were reset on 2026-04-03 and the owners were notified.",
+    "metadata": {"synthetic": true, "kind": "security report", "company": "Halcyon Labs"}
+  },
+  {
+    "doc_id": "syn-orbit-notes",
+    "title": "Orbit Mobile 5.4 release notes",
+    "text": "Orbit Mobile 5.4 was released on 2026-05-19. The release adds an offline mode for saved trips. Orbit Mobile 5.4 requires iOS 16 or later.",
+    "metadata": {"synthetic": true, "kind": "release notes", "company": "Orbit"}
+  },
+  {
+    "doc_id": "syn-orbit-support",
+    "title": "Orbit help centre: supported devices",
+    "text": "Orbit Mobile 5.4 supports iPhones running iOS 15 or later. Older versions of iOS can keep using Orbit Mobile 5.3.",
+    "metadata": {"synthetic": true, "kind": "support article", "company": "Orbit"}
+  }
+]

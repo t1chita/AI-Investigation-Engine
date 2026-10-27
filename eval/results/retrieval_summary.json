@@ -1,0 +1,122 @@
+[
+  {
+    "set": "bank46",
+    "strategy": "fixed",
+    "mode": "semantic",
+    "recall@2": 0.6702898550724637,
+    "recall@5": 0.8115942028985508,
+    "recall@10": 0.8768115942028986,
+    "mrr": 0.8228260869565218,
+    "sf_coverage@5": 0.6770833333333334
+  },
+  {
+    "set": "bank46",
+    "strategy": "fixed",
+    "mode": "keyword",
+    "recall@2": 0.7644927536231884,
+    "recall@5": 0.9239130434782609,
+    "recall@10": 0.9239130434782609,
+    "mrr": 0.9047101449275362,
+    "sf_coverage@5": 0.78125
+  },
+  {
+    "set": "bank46",
+    "strategy": "fixed",
+    "mode": "hybrid",
+    "recall@2": 0.7789855072463768,
+    "recall@5": 0.8840579710144927,
+    "recall@10": 0.9456521739130435,
+    "mrr": 0.8913043478260869,
+    "sf_coverage@5": 0.78125
+  },
+  {
+    "set": "bank46",
+    "strategy": "sentence",
+    "mode": "semantic",
+    "recall@2": 0.6811594202898551,
+    "recall@5": 0.855072463768116,
+    "recall@10": 0.8768115942028986,
+    "mrr": 0.8365942028985508,
+    "sf_coverage@5": 0.7604166666666666
+  },
+  {
+    "set": "bank46",
+    "strategy": "sentence",
+    "mode": "keyword",
+    "recall@2": 0.7753623188405797,
+    "recall@5": 0.9130434782608695,
+    "recall@10": 0.9239130434782609,
+    "mrr": 0.9003623188405797,
+    "sf_coverage@5": 0.7395833333333334
+  },
+  {
+    "set": "bank46",
+    "strategy": "sentence",
+    "mode": "hybrid",
+    "recall@2": 0.8115942028985508,
+    "recall@5": 0.894927536231884,
+    "recall@10": 0.9456521739130435,
+    "mrr": 0.9166666666666666,
+    "sf_coverage@5": 0.8125
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "fixed",
+    "mode": "semantic",
+    "recall@2": 0.488,
+    "recall@5": 0.621,
+    "recall@10": 0.689,
+    "mrr": 0.7623444444444444,
+    "sf_coverage@5": 0.5666666666666667
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "fixed",
+    "mode": "keyword",
+    "recall@2": 0.528,
+    "recall@5": 0.692,
+    "recall@10": 0.766,
+    "mrr": 0.8283087301587302,
+    "sf_coverage@5": 0.6567333333333334
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "fixed",
+    "mode": "hybrid",
+    "recall@2": 0.564,
+    "recall@5": 0.717,
+    "recall@10": 0.781,
+    "mrr": 0.8318039682539683,
+    "sf_coverage@5": 0.6756
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "sentence",
+    "mode": "semantic",
+    "recall@2": 0.494,
+    "recall@5": 0.626,
+    "recall@10": 0.684,
+    "mrr": 0.775818253968254,
+    "sf_coverage@5": 0.5750666666666666
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "sentence",
+    "mode": "keyword",
+    "recall@2": 0.528,
+    "recall@5": 0.697,
+    "recall@10": 0.773,
+    "mrr": 0.827165873015873,
+    "sf_coverage@5": 0.6451
+  },
+  {
+    "set": "hotpot500",
+    "strategy": "sentence",
+    "mode": "hybrid",
+    "recall@2": 0.563,
+    "recall@5": 0.726,
+    "recall@10": 0.797,
+    "mrr": 0.8283103174603175,
+    "sf_coverage@5": 0.6715666666666666
+  }
+]

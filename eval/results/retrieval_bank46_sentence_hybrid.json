@@ -1,0 +1,750 @@
+{
+  "strategy": "sentence",
+  "mode": "hybrid",
+  "n": 46,
+  "summary": {
+    "recall@2": 0.8115942028985508,
+    "recall@5": 0.894927536231884,
+    "recall@10": 0.9456521739130435,
+    "mrr": 0.9166666666666666,
+    "sf_coverage@5": 0.8125
+  },
+  "rows": [
+    {
+      "qid": "syn-s01",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-chg-0412",
+        "syn-inc-7781",
+        "syn-chg-0415",
+        "syn-pm-7781",
+        "hp-b95c3c39f5b3c589"
+      ]
+    },
+    {
+      "qid": "syn-s02",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-chg-0412",
+        "syn-runbook-pool",
+        "syn-chg-0415",
+        "hp-b7f6d6a685298bd7",
+        "syn-inc-7781"
+      ]
+    },
+    {
+      "qid": "syn-s03",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.5,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-chg-0415",
+        "syn-chg-0412",
+        "hp-e101bb58185532be",
+        "hp-44cd879e59348238",
+        "hp-4a3001a1f8a770fc"
+      ]
+    },
+    {
+      "qid": "syn-s04",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781",
+        "syn-chg-0412",
+        "hp-6ceaa84c65b4404b",
+        "syn-runbook-pool"
+      ]
+    },
+    {
+      "qid": "syn-s05",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.5,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-chg-0412",
+        "syn-inc-7781",
+        "syn-pm-7781",
+        "syn-runbook-pool",
+        "hp-4cf750d42003af4a"
+      ]
+    },
+    {
+      "qid": "syn-s06",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email",
+        "hp-b5790c9accce7e02",
+        "hp-273daecc50ba0dda",
+        "hp-75af9b033f309737"
+      ]
+    },
+    {
+      "qid": "syn-s07",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-nw-rca",
+        "syn-nw-status",
+        "hp-7be049783b432a23",
+        "hp-a6ffaf7941bed681",
+        "hp-3077e085d61c5bc5"
+      ]
+    },
+    {
+      "qid": "syn-s08",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-hal-alert",
+        "syn-hal-final",
+        "hp-a088abe861d0bcf2",
+        "hp-56334d3b9a749ed8",
+        "hp-671d1d609a39c6f0"
+      ]
+    },
+    {
+      "qid": "syn-s09",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support",
+        "hp-fadaba628c214cca",
+        "hp-246642339370e736",
+        "hp-538fc9a374ec680f"
+      ]
+    },
+    {
+      "qid": "syn-s10",
+      "category": "simple",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support",
+        "hp-d5c74886fbf749af",
+        "hp-a96c28b8caa53ae6",
+        "hp-51b189065cba64d5"
+      ]
+    },
+    {
+      "qid": "syn-m01",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781",
+        "syn-chg-0415",
+        "hp-4a3001a1f8a770fc",
+        "hp-ffe05d72f45c2201"
+      ]
+    },
+    {
+      "qid": "syn-m02",
+      "category": "multi_step",
+      "recall@2": 0.3333333333333333,
+      "recall@5": 0.6666666666666666,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-runbook-pool",
+        "hp-49e41fedbff9de7e",
+        "syn-chg-0412",
+        "hp-e1bc56077037954a",
+        "hp-c9bf4e8ec2fcaef2"
+      ]
+    },
+    {
+      "qid": "syn-d01",
+      "category": "multi_document",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "mrr": 0.5,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-status-0303",
+        "syn-chg-0415",
+        "hp-ee90c22d96cc9925",
+        "hp-25c1d8c5eda52a12",
+        "syn-pm-7781"
+      ]
+    },
+    {
+      "qid": "syn-d02",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-pm-7781",
+        "syn-inc-7781",
+        "hp-12f0598d47a68b72",
+        "syn-chg-0412",
+        "hp-6f3e0d3551361e4b"
+      ]
+    },
+    {
+      "qid": "syn-u01",
+      "category": "unanswerable",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email",
+        "hp-5b7adca562f201be",
+        "hp-44cd879e59348238",
+        "hp-6535176d8ae48fa9"
+      ]
+    },
+    {
+      "qid": "syn-u02",
+      "category": "unanswerable",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email",
+        "hp-5b7adca562f201be",
+        "hp-6535176d8ae48fa9",
+        "hp-ff881aa7812f0c5a"
+      ]
+    },
+    {
+      "qid": "syn-u03",
+      "category": "unanswerable",
+      "recall@2": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.3333333333333333,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news",
+        "syn-fire-insurer",
+        "hp-9bfe4400d1cda1d5",
+        "hp-26376f9da26a1da7"
+      ]
+    },
+    {
+      "qid": "syn-u04",
+      "category": "unanswerable",
+      "recall@2": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.3333333333333333,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-status-0303",
+        "hp-ee90c22d96cc9925",
+        "syn-pm-7781",
+        "syn-inc-7781",
+        "hp-25c1d8c5eda52a12"
+      ]
+    },
+    {
+      "qid": "syn-u05",
+      "category": "unanswerable",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-hal-alert",
+        "syn-hal-final",
+        "hp-68b454fe8a599589",
+        "hp-5848b99a94b98712",
+        "hp-1c04cec957d4905e"
+      ]
+    },
+    {
+      "qid": "syn-u06",
+      "category": "unanswerable",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support",
+        "hp-fadaba628c214cca",
+        "hp-a96c28b8caa53ae6",
+        "hp-b29749a0bd1880c7"
+      ]
+    },
+    {
+      "qid": "syn-u07",
+      "category": "unanswerable",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-nw-rca",
+        "syn-nw-status",
+        "hp-52e3b382bfa3ce9e",
+        "hp-6df98a52f69201f2",
+        "hp-d8e4a4ac6fa7735d"
+      ]
+    },
+    {
+      "qid": "syn-u08",
+      "category": "unanswerable",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-inc-7781",
+        "hp-c2ca3890300c1ad9",
+        "hp-3c78b5aa5ff15e2c",
+        "hp-55129ecb65fa1a38",
+        "hp-f47b57fab7c136cf"
+      ]
+    },
+    {
+      "qid": "syn-c01",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news",
+        "syn-fire-insurer",
+        "hp-9bfe4400d1cda1d5",
+        "hp-26376f9da26a1da7"
+      ]
+    },
+    {
+      "qid": "syn-c02",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news",
+        "syn-fire-insurer",
+        "hp-9bfe4400d1cda1d5",
+        "hp-26376f9da26a1da7"
+      ]
+    },
+    {
+      "qid": "syn-c03",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news",
+        "syn-fire-insurer",
+        "hp-9bfe4400d1cda1d5",
+        "hp-26376f9da26a1da7"
+      ]
+    },
+    {
+      "qid": "syn-c04",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-nw-status",
+        "syn-nw-rca",
+        "hp-c2487d60394963c1",
+        "hp-2231aaaee66147a5",
+        "hp-6f3e0d3551361e4b"
+      ]
+    },
+    {
+      "qid": "syn-c05",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-nw-rca",
+        "syn-nw-status",
+        "hp-ad6711ccf0c46b47",
+        "hp-cf45c77391c22fb4",
+        "hp-1821d94d7e454cd0"
+      ]
+    },
+    {
+      "qid": "syn-c06",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-hal-alert",
+        "syn-hal-final",
+        "hp-5848b99a94b98712",
+        "hp-1395660bd837876e",
+        "hp-befde6e3bd95ec40"
+      ]
+    },
+    {
+      "qid": "syn-c07",
+      "category": "contradictory",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support",
+        "hp-ded9096fc6dfe1b6",
+        "hp-d44a9cee53daeebc",
+        "hp-709a97d56fa340cd"
+      ]
+    },
+    {
+      "qid": "syn-c08",
+      "category": "contradictory",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 1.0,
+      "sf_coverage@5": null,
+      "top_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781",
+        "hp-6f3e0d3551361e4b",
+        "hp-12f0598d47a68b72",
+        "hp-87a10e9629fdec3a"
+      ]
+    },
+    {
+      "qid": "5a70eee85542994082a3e3f0",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 1.0,
+      "sf_coverage@5": 0.3333333333333333,
+      "top_docs": [
+        "hp-d1857d41a816b587",
+        "hp-23cd89d1d7ca7e61",
+        "hp-ee1a2419c05b0634",
+        "hp-dfd919d7d85cbe30",
+        "hp-5e0cb0b66780a005"
+      ]
+    },
+    {
+      "qid": "5a70f0a75542994082a3e403",
+      "category": "multi_step",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 0.6666666666666666,
+      "top_docs": [
+        "hp-66d1f2fbe757ce1f",
+        "hp-b44a927c070e7cab",
+        "hp-a8e4230ff2e31cea",
+        "hp-7e3acdffd2121537",
+        "hp-3462ed1aadec5e95"
+      ]
+    },
+    {
+      "qid": "5a70f1685542994082a3e40f",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.5,
+      "sf_coverage@5": 0.6666666666666666,
+      "top_docs": [
+        "hp-2d9dfd6bcbb14813",
+        "hp-996521c38f6adcf1",
+        "hp-c9625f8cf4969ef5",
+        "hp-2863ca4c9f64cea0",
+        "hp-589abf69d1831c37"
+      ]
+    },
+    {
+      "qid": "5a70f39c5542994082a3e429",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 0.6666666666666666,
+      "top_docs": [
+        "hp-c2cb0997e764d694",
+        "hp-7b92f796b6b7165d",
+        "hp-ebfe91910057d266",
+        "hp-0da175f7199772ad",
+        "hp-f3bc2b9044897404"
+      ]
+    },
+    {
+      "qid": "5a70f4c45542994082a3e437",
+      "category": "multi_step",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-eb7b99a557b536d8",
+        "hp-ab4ef32cf9426048",
+        "hp-933a3d69066ac032",
+        "hp-d191bbb634eafe07",
+        "hp-f592da741aafdd2d"
+      ]
+    },
+    {
+      "qid": "5a70f6425542994082a3e44c",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 0.5,
+      "sf_coverage@5": 0.5,
+      "top_docs": [
+        "hp-56505da70a09cd81",
+        "hp-898ac9a00c9d991f",
+        "hp-00400acc998ddc3e",
+        "hp-0ee2a89e67bb1d49",
+        "hp-2cdedec59294392a"
+      ]
+    },
+    {
+      "qid": "5a70ff335542994082a3e49c",
+      "category": "multi_step",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 1.0,
+      "sf_coverage@5": 0.6666666666666666,
+      "top_docs": [
+        "hp-373c89f4762728e0",
+        "hp-881240d3c53f3ee7",
+        "hp-b58dd8f58ff3dbc9",
+        "hp-480d1bd8e11aa54e",
+        "hp-b9dae355a80d41d7"
+      ]
+    },
+    {
+      "qid": "5a71095e5542994082a3e4f3",
+      "category": "multi_step",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-1ec10460fb7fb2da",
+        "hp-7f7dcceb289e8023",
+        "hp-cf1e5c1b76b33de0",
+        "hp-c4125030fe849b07",
+        "hp-ce8fcd3ef9d80f51"
+      ]
+    },
+    {
+      "qid": "5a70f0e75542994082a3e408",
+      "category": "multi_document",
+      "recall@2": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 1.0,
+      "sf_coverage@5": 0.5,
+      "top_docs": [
+        "hp-ccdeb7b2959ec1c7",
+        "hp-65946d4dd543ebe2",
+        "hp-cdd19088562c3e40",
+        "hp-3da951c189a81cd3",
+        "hp-f26b8ff33668c77a"
+      ]
+    },
+    {
+      "qid": "5a70f11a5542994082a3e40b",
+      "category": "multi_document",
+      "recall@2": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-a7cc102e780ba298",
+        "hp-fad08ba7461ec9bc",
+        "hp-07711517a010479c",
+        "hp-eb90a455c613ea68",
+        "hp-0cde5139622d4960"
+      ]
+    },
+    {
+      "qid": "5a70f4695542994082a3e435",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-2846a4a8ba657ce5",
+        "hp-40d05c1b949f2c82",
+        "hp-d3cdaeeb808713a9",
+        "hp-1c75edaed5c68ea0",
+        "hp-63e13b19fbfdf4e1"
+      ]
+    },
+    {
+      "qid": "5a70f9335542994082a3e46a",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-7c0a52c29bb9c6a2",
+        "hp-3de9e4713d2ecec0",
+        "hp-7611a74c7a767947",
+        "hp-ad0ffed03b193aa2",
+        "hp-1ccbe31c75d7fd03"
+      ]
+    },
+    {
+      "qid": "5a7100435542994082a3e4a3",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-70341b94bd954e06",
+        "hp-03851bd5cd014ca0",
+        "hp-819efe06724209f0",
+        "hp-63955f4a552927c8",
+        "hp-c923aad01d3aab57"
+      ]
+    },
+    {
+      "qid": "5a7103b35542994082a3e4c0",
+      "category": "multi_document",
+      "recall@2": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-5d99abeaad9ce95c",
+        "hp-ba246aa20ff041d8",
+        "hp-5d0f82337c9cba98",
+        "hp-188a1a0f54a7d1d6",
+        "hp-abf11ce25ca18d29"
+      ]
+    },
+    {
+      "qid": "5a7108fa5542994082a3e4ef",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-a30f6f5b749031da",
+        "hp-8841bb365d53cc32",
+        "hp-10b9793072d4b351",
+        "hp-2713f3679788eea2",
+        "hp-825dfbfab8b51417"
+      ]
+    },
+    {
+      "qid": "5a710a915542994082a3e504",
+      "category": "multi_document",
+      "recall@2": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "sf_coverage@5": 1.0,
+      "top_docs": [
+        "hp-da21e9905325bd4c",
+        "hp-7d5d0e73f3d617ae",
+        "hp-5d37413e9aa71953",
+        "hp-428e6adc13ce9699",
+        "hp-7075f9024052e2b6"
+      ]
+    }
+  ]
+}
