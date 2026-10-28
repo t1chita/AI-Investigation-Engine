@@ -140,12 +140,12 @@ shell. Local Qdrant allows one process at a time: stop the API before running in
 | RAG, tools, citations, conflicts, abstention | yes | yes | `tests/test_investigate.py` + 92 real questions |
 | LLM clients (Groq, Gemini), retries | yes | yes | Groq `openai/gpt-oss-120b` in use; Gemini key's project returns 402 (no credits) |
 | API + UI | yes | yes (local) | `tests/test_api.py`; UI checked in browser |
-| Evaluation (46 questions, 2 configs) | yes | yes | answer correctness 0.717 vs 0.674; `docs/evaluation-report.md` |
+| Evaluation (46 questions, 2 configs) | yes | yes | run 1: 0.717 vs 0.674 (official); run 2 sentence-hybrid 0.804, fixed-semantic partial 20/46; `docs/evaluation-report.md` |
 | Cloud data (Neon + Qdrant Cloud) | yes | yes | 66,598 docs, 130,854 chunks = 130,854 vectors |
 | Slim server (≤ 512 MB) | yes | yes (local, cloud data) | 359 MB; 56 tests; clean-venv install without torch |
 | Deployment + persistence | yes | yes | https://ai-investigation-engine-3faf.onrender.com; 334–336 MB, start-up 93–102 s; test doc survived container replacement (README) |
 | LLM fallback on daily quota | yes | yes (live) | gpt-oss-120b → gpt-oss-20b → qwen3.8-27b; evaluation uses no fallback |
-| README, evaluation report | yes | – | AI usage report not written |
+| README, evaluation report | yes | – | submission-ready 28 Oct; AI usage report drafted, needs the developer's own sections |
 
 Local data (git-ignored): `data/registry.db` (SQLite, 208 MB), `data/qdrant/` (1 GB, both
 strategies). Rebuild with `python scripts/ingest_hotpotqa.py` (about 6.5 min, resumable).

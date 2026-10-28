@@ -13,7 +13,10 @@ the last 15 minutes, the first page load takes about 2 minutes while the server 
 > the multi-step RAG pipeline with tool calls, citations, conflict reporting and abstention, the
 > FastAPI backend with its web page, the 66,581-record corpus in Neon + Qdrant Cloud, both
 > evaluations (retrieval on 500 questions, end-to-end answers on 46 questions), and a verified
-> public deployment on Render with data surviving container replacement. See "What is left".
+> public deployment on Render with data surviving container replacement.
+
+Submission documents: [evaluation report](docs/evaluation-report.md),
+[AI usage report](docs/ai-usage-report.md), [dataset inspection](docs/dataset-inspection.md).
 
 ## How it works
 
@@ -80,7 +83,7 @@ Python 3.11+ (developed on 3.12, Apple Silicon).
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,data]"    # server + local Qdrant + dataset tools
 cp .env.example .env            # defaults: local SQLite + local Qdrant, no LLM
-pytest                          # 56 tests, about 1 second, no network
+pytest                          # 60 tests, about 1 second, no network
 python scripts/ingest_hotpotqa.py   # about 6.5 min on an M-series Mac; resumable
 uvicorn investigator.api:app --port 8000   # UI at http://localhost:8000, API docs at /docs
 ```
@@ -108,12 +111,20 @@ Retrieval, 500 HotpotQA questions (document-level relevance):
 | sentence + hybrid (RRF) | **0.726** | **0.797** | 0.828 |
 | fixed + hybrid (RRF) | 0.717 | 0.781 | **0.832** |
 
-End to end, 46 questions, LLM `openai/gpt-oss-120b` on Groq (free tier):
+End to end, 46 questions, LLM `openai/gpt-oss-120b` on Groq (free tier). **Run 1** is the
+official comparison of the two configurations:
 
 | Configuration | Answer correctness | simple | multi-step | multi-doc | unanswerable | contradictory | Citation precision |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | sentence chunks + hybrid | **0.717** | 1.00 | 0.40 | 0.60 | 0.875 | 0.75 | 0.946 |
 | fixed chunks + semantic | 0.674 | 0.90 | 0.30 | 0.70 | 0.875 | 0.625 | 0.971 |
+
+**Run 2** was made after fixing the failures found in run 1: a second chance to search before
+abstaining, reserved evidence slots for follow-up searches, and one rewritten synthetic conflict
+document (disclosed in the report). With sentence + hybrid it scores **0.804 (37/46)**:
+multi-step 0.40 → 0.70, contradictory 0.75 → 0.875, citation precision 0.974. 4 questions went
+from wrong to right and none from right to wrong. The fixed + semantic run stopped at 20/46 on the
+free daily token limit, so it is reported as partial.
 
 Full tables, the 46-question bank, failure analysis by cause and limitations:
 [docs/evaluation-report.md](docs/evaluation-report.md).
@@ -172,9 +183,13 @@ locally where both are indexed. Secrets are set in the Render dashboard, never i
 Tried and ruled out: Hugging Face Spaces (Docker/Gradio on free CPU now needs a paid plan; 402),
 Oracle Cloud Always Free (no Ampere capacity in the account's home region, Paris).
 
-## What is left
+## Known limitations
 
-1. **Answer evaluation run 2** (second chance before abstaining, reserved evidence slots, fixed
-   synthetic conflicts). It resumes automatically as Groq's rolling daily token window frees up;
-   results go into `docs/evaluation-report.md`.
-2. The AI usage report.
+- The answer evaluation uses string matching, which under-counts answers that are correct but
+  worded differently (5 cases are listed in the report).
+- Run 2 of the answer evaluation for fixed + semantic is partial (20/46) because of the free
+  LLM token limit. `python scripts/evaluate.py answers` resumes it.
+- MiniLM is a small embedding model, and BM25 beats it on this data. Exact identifiers such as
+  `CHG-0412` are found by keyword search, not by semantic search.
+- Dotted identifiers are kept whole, so `pool` does not match `pool.max`.
+- On the free tier the first request after 15 idle minutes waits about 2 minutes for start-up.

@@ -1,0 +1,567 @@
+{
+  "config": "fixed-semantic",
+  "complete": false,
+  "n": 20,
+  "summary": {
+    "answer_correctness": 0.8,
+    "em_answerable": 0.42857142857142855,
+    "f1_answerable": 0.6366213151927438,
+    "evidence_recall": 0.8916666666666666,
+    "citation_precision": 0.9642857142857143,
+    "citation_recall_answerable": 0.7738095238095238,
+    "errors": 0,
+    "llm_calls": 52,
+    "by_category": {
+      "simple": 0.9,
+      "multi_step": 0.0,
+      "multi_document": 1.0,
+      "unanswerable": 0.8333333333333334
+    }
+  },
+  "rows": [
+    {
+      "qid": "syn-s01",
+      "category": "simple",
+      "question": "Which version of payments-api did change CHG-0412 deploy?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "payments-api version v2.18.0",
+      "gold_answers": [
+        "v2.18.0",
+        "2.18.0"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.5,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.24,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s02",
+      "category": "simple",
+      "question": "To what value was pool.max lowered in change CHG-0412?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "20",
+      "gold_answers": [
+        "20"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.3,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s03",
+      "category": "simple",
+      "question": "Who approved change CHG-0412?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "Dana Whitfield"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 3,
+      "seconds": 4.99,
+      "error": "",
+      "warnings": [
+        "model repeated search 'CHG-0412 approval'; stopping searches"
+      ]
+    },
+    {
+      "qid": "syn-s04",
+      "category": "simple",
+      "question": "At what time was payments-api rolled back during incident INC-7781?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "17:02 UTC",
+      "gold_answers": [
+        "17:02 UTC",
+        "17:02"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 12.71,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s05",
+      "category": "simple",
+      "question": "Which payments-api version was restored by the INC-7781 rollback?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "v2.17.3",
+      "gold_answers": [
+        "v2.17.3",
+        "2.17.3"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 0.5,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412",
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 604.12,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s06",
+      "category": "simple",
+      "question": "What is the proposed term of the Meridian Freight renewal draft?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "24 months",
+      "gold_answers": [
+        "24 months"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-meridian-draft"
+      ],
+      "gold_docs": [
+        "syn-meridian-draft"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.43,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s07",
+      "category": "simple",
+      "question": "Which Northwind Cloud region had the April 2026 power fault?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "eu-west-2",
+      "gold_answers": [
+        "eu-west-2"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-rca",
+        "syn-nw-status"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.49,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s08",
+      "category": "simple",
+      "question": "How many accounts were targeted in the SEC-221 credential stuffing attack?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "3,140 accounts",
+      "gold_answers": [
+        "3,140",
+        "3140"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.6666666666666666,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-hal-alert"
+      ],
+      "gold_docs": [
+        "syn-hal-alert"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.67,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s09",
+      "category": "simple",
+      "question": "When was Orbit Mobile 5.4 released?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "2026-05-19",
+      "gold_answers": [
+        "2026-05-19",
+        "19 May 2026",
+        "May 19, 2026"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 2,
+      "seconds": 3.17,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s10",
+      "category": "simple",
+      "question": "What feature did Orbit Mobile 5.4 add?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Orbit Mobile 5.4 added an offline mode for saved trips.",
+      "gold_answers": [
+        "offline mode",
+        "an offline mode for saved trips"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.7142857142857143,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.34,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-m01",
+      "category": "multi_step",
+      "question": "Which change caused incident INC-7781, and who approved that change?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "CHG-0412, approved by Dana Whitfield",
+        "CHG-0412 Dana Whitfield"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-chg-0412"
+      ],
+      "llm_calls": 4,
+      "seconds": 3.56,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-m02",
+      "category": "multi_step",
+      "question": "What minimum pool size does the runbook require at peak, compared with the pool.max set by the change behind INC-7781?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "at least 60 versus 20",
+        "60 vs 20"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.3333333333333333,
+      "citation_precision": 1.0,
+      "citation_recall": 0.3333333333333333,
+      "cited_docs": [
+        "syn-runbook-pool"
+      ],
+      "gold_docs": [
+        "syn-runbook-pool",
+        "syn-chg-0412",
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.72,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "syn-d01",
+      "category": "multi_document",
+      "question": "Of the changes made at Larkspur Pay on 3 March 2026, which one modified backend services?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Change CHG-0412 (payments\u2011api v2.18.0) modified backend services by lowering the database connection pool setting.",
+      "gold_answers": [
+        "CHG-0412"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.14285714285714288,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412",
+        "syn-chg-0415"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.35,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-d02",
+      "category": "multi_document",
+      "question": "Which services failed during the payment outage caused by CHG-0412, and was the payouts service affected?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The checkout-service and the refund-service failed, and the payouts service was not affected.",
+      "gold_answers": [
+        "checkout-service and refund-service failed; payouts was not affected"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.888888888888889,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-pm-7781"
+      ],
+      "gold_docs": [
+        "syn-pm-7781",
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.49,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u01",
+      "category": "unanswerable",
+      "question": "Who approved the Meridian Freight contract renewal?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email"
+      ],
+      "llm_calls": 4,
+      "seconds": 4.02,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u02",
+      "category": "unanswerable",
+      "question": "On what date was the Meridian Freight renewal signed?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email"
+      ],
+      "llm_calls": 4,
+      "seconds": 3.78,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u03",
+      "category": "unanswerable",
+      "question": "What caused the Pier 9 warehouse fire?",
+      "expected_status": "insufficient",
+      "status": "answered",
+      "answer": "The cause of the Pier 9 warehouse fire has not been determined and is still under investigation.",
+      "gold_answers": [],
+      "correct": false,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-insurer"
+      ],
+      "gold_docs": [
+        "syn-fire-insurer"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.16,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u04",
+      "category": "unanswerable",
+      "question": "How much revenue did Larkspur Pay lose because of incident INC-7781?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781"
+      ],
+      "llm_calls": 4,
+      "seconds": 4.29,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u05",
+      "category": "unanswerable",
+      "question": "Which attacker group was behind security incident SEC-221?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-hal-alert",
+        "syn-hal-final"
+      ],
+      "llm_calls": 3,
+      "seconds": 2.54,
+      "error": "",
+      "warnings": [
+        "model repeated search 'SEC-221 attacker group'; stopping searches"
+      ]
+    },
+    {
+      "qid": "syn-u06",
+      "category": "unanswerable",
+      "question": "When will Orbit Mobile 6.0 be released?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 4,
+      "seconds": 4.08,
+      "error": "",
+      "warnings": []
+    }
+  ],
+  "llm": "groq:openai/gpt-oss-120b"
+}

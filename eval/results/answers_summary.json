@@ -1,0 +1,41 @@
+{
+  "sentence-hybrid": {
+    "answer_correctness": 0.8043478260869565,
+    "em_answerable": 0.43333333333333335,
+    "f1_answerable": 0.6804185139479257,
+    "evidence_recall": 0.967391304347826,
+    "citation_precision": 0.9736842105263158,
+    "citation_recall_answerable": 0.8222222222222223,
+    "errors": 0,
+    "llm_calls": 106,
+    "by_category": {
+      "simple": 1.0,
+      "multi_step": 0.7,
+      "multi_document": 0.6,
+      "unanswerable": 0.875,
+      "contradictory": 0.875
+    }
+  },
+  "fixed-semantic": {
+    "answer_correctness": 0.8,
+    "em_answerable": 0.42857142857142855,
+    "f1_answerable": 0.6366213151927438,
+    "evidence_recall": 0.8916666666666666,
+    "citation_precision": 0.9642857142857143,
+    "citation_recall_answerable": 0.7738095238095238,
+    "errors": 0,
+    "llm_calls": 52,
+    "by_category": {
+      "simple": 0.9,
+      "multi_step": 0.0,
+      "multi_document": 1.0,
+      "unanswerable": 0.8333333333333334
+    }
+  },
+  "usage": {
+    "calls": 4,
+    "input_tokens": 3412,
+    "output_tokens": 1004,
+    "retries": 0
+  }
+}

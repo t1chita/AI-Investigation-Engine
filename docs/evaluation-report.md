@@ -1,8 +1,15 @@
 # Evaluation report
 
-Status (27 October 2026): **retrieval and end-to-end answer evaluations complete** (one run
-each). Every number below was produced by `scripts/evaluate.py` on the local index; raw
-per-question results are in `eval/results/`.
+Status (28 October 2026):
+- **Retrieval evaluation:** complete (500 + 46 questions, 2 chunkers × 3 modes).
+- **Answer evaluation, run 1:** complete for both configurations. This is the official
+  comparison of the two configurations.
+- **Answer evaluation, run 2:** after the pipeline fixes. Complete for the main configuration
+  (46/46). The comparison configuration stopped at 20/46 on Groq's free daily token limit (see
+  "Run 2" below).
+
+Every number was produced by `scripts/evaluate.py` on the local index. Raw per-question results:
+`eval/results/run1/` (run 1), `eval/results/answers_*.json` (run 2), `eval/results/retrieval_*.json`.
 
 ## Setup
 
@@ -92,7 +99,7 @@ multi-document 0.95, unanswerable 1.00 (the related documents are found), contra
   ("elevated checkout errors since 16:25"). Improvements: query expansion by the planner, a
   stronger embedding model, or metadata linking (date, company).
 
-## End-to-end answer evaluation
+## End-to-end answer evaluation, run 1 (official comparison)
 
 LLM: `openai/gpt-oss-120b` on Groq's free tier (temperature 0, JSON mode). Same 46 questions,
 same LLM, same pipeline limits (plan ≤ 3 searches, ≤ 2 follow-up searches, 5 results per search,
@@ -160,6 +167,8 @@ c05 (both configurations) and c04 (fixed-semantic). They should be rewritten as 
 
 ### Improvements, in order of expected value
 
+Items 1 and 5 were done before run 2 (below); the others are still open.
+
 1. **Make the follow-up search harder to skip.** When the model says "insufficient" but the
    evidence names an entity it has not searched (syn-m01), run one more search automatically, or
    prompt with the specific unresolved entity.
@@ -172,14 +181,82 @@ c05 (both configurations) and c04 (fixed-semantic). They should be rewritten as 
 5. **Fix the two weak synthetic conflicts** (c04/c05) and re-run.
 6. **A stronger embedding model** (BM25 beats MiniLM here), then re-measure retrieval.
 
+## Answer evaluation, run 2 (after the fixes; partial)
+
+What changed between run 1 and run 2 (same 46 questions, same LLM, same labels):
+1. **Second chance before abstaining.** When the model answers "insufficient", the pipeline asks
+   it once more to name one missing entity and runs that search before accepting the abstention.
+2. **Reserved evidence slots.** The first searches may fill 8 evidence slots, and each follow-up
+   search adds up to 3 more. In run 1, the first searches could fill all 10 slots, so follow-up
+   searches could not add the missing hop.
+3. **One synthetic document rewritten.** `syn-nw-status` now says that *all* services were
+   restored at 09:58 UTC (46 minutes). This makes syn-c04/c05 a clean conflict with the RCA's
+   11:40. This is a change to test data. It is disclosed here because it affects 2 of the
+   46 questions.
+
+How the run went: Groq's free tier allows 200,000 tokens per model per rolling 24 hours, so run 2
+was resumed several times as tokens became available. Each answer is saved as soon as it is
+produced. Two questions (syn-s01, syn-s02) first failed with a network error
+(`LLMUnavailable: ConnectError`: the machine lost its connection, so these are not model
+answers). They were removed and asked again. No other answer was edited or re-asked.
+
+### sentence-hybrid: complete (46/46)
+
+| Metric | Run 1 | Run 2 |
+| --- | ---: | ---: |
+| Answer correctness (all 46) | 0.717 (33/46) | **0.804 (37/46)** |
+| simple (10) | 1.00 | 1.00 |
+| multi-step (10) | 0.40 | **0.70** |
+| multi-document (10) | 0.60 | 0.60 |
+| unanswerable (8) | 0.875 | 0.875 |
+| contradictory (8) | 0.75 | **0.875** |
+| EM, answerable | **0.467** | 0.433 |
+| F1, answerable | 0.628 | **0.680** |
+| Evidence recall | 0.946 | **0.967** |
+| Citation precision | 0.946 | **0.974** |
+| Citation recall, answerable | 0.756 | **0.822** |
+| LLM calls | 92 | 106 |
+
+Per question: **4 questions went from wrong to right, and none went from right to wrong.**
+- syn-m01 (INC-7781 → CHG-0412 → approver): run 1 abstained. Run 2 searched for CHG-0412 and
+  answered "CHG-0412, approved by Dana Whitfield", citing both documents.
+- The Corvette and Kareena Kapoor bridge questions: the second hop was found by a follow-up search.
+- syn-c05: now reported as a conflict, after the rewrite in change 3.
+
+The cost is 14 more LLM calls (+15%) for the extra searches. EM fell slightly (0.467 → 0.433)
+while F1 rose, because some answers are now longer and cite more.
+
+Still wrong (9): syn-m02, syn-u03 and two HotpotQA questions are the grading or label cases
+listed for run 1. The others are syn-d01 and syn-c08 (a needed document is never retrieved),
+one more bridge question, and two comparison questions (one side is crowded out). These match
+open items 2–4 above.
+
+### fixed-semantic: partial (20/46, stopped by the daily token limit)
+
+The 20 questions answered so far are 10 simple, 2 multi-step, 2 multi-document and 6
+unanswerable. On these 20 questions, run 1 and run 2 are both correct on 16 of 20 (0.80). An
+overall score from 20 questions would not be comparable with run 1's 46, so it is not given.
+
+One result here is useful even though the run is partial. **The second chance does not help
+when retrieval cannot find the hop.** On syn-m01 the extra search ran (4 LLM calls), but the
+document `CHG-0412` was still not retrieved, so the answer stayed "insufficient". On syn-s03, a
+semantic search for "CHG-0412 approval" also failed to find it. An exact identifier like
+CHG-0412 is what BM25 matches and MiniLM does not. The same question succeeds with hybrid
+retrieval. This supports the retrieval finding that keyword search must stay in the pipeline.
+
+The remaining 26 questions can be run with `python scripts/evaluate.py answers`. The command
+resumes from the saved file.
+
 ## Limitations
 
 - 30 of the 46 bank questions are synthetic and were written by us; they test behaviour
   (abstention, conflict reporting) rather than open-domain difficulty.
 - Relevance is document-level; a document can count as found even when the retrieved chunk is
   not the one with the answer (SF@5 measures that separately for HotpotQA).
-- One run, no confidence intervals; the 500-question set makes retrieval numbers fairly stable,
-  the 46-question numbers less so (one question = about 2 percentage points).
+- No confidence intervals. The 500-question set makes the retrieval numbers fairly stable, and
+  the 46-question numbers less so: one question is about 2 percentage points. Run 2 changed the
+  pipeline and one test document at the same time, so its gain cannot be split exactly between
+  the two. Only syn-c04/c05 use the rewritten document, and of those only syn-c05 changed result.
 - Answer correctness uses string matching (contains or F1 ≥ 0.5), which under-counts correct but
   differently worded answers (5 such cases listed above).
 - Only one LLM was evaluated; the free-tier token limit makes larger answer runs slow (about

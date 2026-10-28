@@ -1,0 +1,1292 @@
+{
+  "config": "sentence-hybrid",
+  "complete": true,
+  "n": 46,
+  "summary": {
+    "answer_correctness": 0.8043478260869565,
+    "em_answerable": 0.43333333333333335,
+    "f1_answerable": 0.6804185139479257,
+    "evidence_recall": 0.967391304347826,
+    "citation_precision": 0.9736842105263158,
+    "citation_recall_answerable": 0.8222222222222223,
+    "errors": 0,
+    "llm_calls": 106,
+    "by_category": {
+      "simple": 1.0,
+      "multi_step": 0.7,
+      "multi_document": 0.6,
+      "unanswerable": 0.875,
+      "contradictory": 0.875
+    }
+  },
+  "rows": [
+    {
+      "qid": "syn-s01",
+      "category": "simple",
+      "question": "Which version of payments-api did change CHG-0412 deploy?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "v2.18.0",
+      "gold_answers": [
+        "v2.18.0",
+        "2.18.0"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 2,
+      "seconds": 6.02,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s02",
+      "category": "simple",
+      "question": "To what value was pool.max lowered in change CHG-0412?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "20",
+      "gold_answers": [
+        "20"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.16,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s03",
+      "category": "simple",
+      "question": "Who approved change CHG-0412?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Dana Whitfield",
+      "gold_answers": [
+        "Dana Whitfield"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-chg-0412"
+      ],
+      "llm_calls": 2,
+      "seconds": 1465.07,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s04",
+      "category": "simple",
+      "question": "At what time was payments-api rolled back during incident INC-7781?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "17:02 UTC",
+      "gold_answers": [
+        "17:02 UTC",
+        "17:02"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.53,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s05",
+      "category": "simple",
+      "question": "Which payments-api version was restored by the INC-7781 rollback?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "v2.17.3",
+      "gold_answers": [
+        "v2.17.3",
+        "2.17.3"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.78,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s06",
+      "category": "simple",
+      "question": "What is the proposed term of the Meridian Freight renewal draft?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "24 months",
+      "gold_answers": [
+        "24 months"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-meridian-draft"
+      ],
+      "gold_docs": [
+        "syn-meridian-draft"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.36,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s07",
+      "category": "simple",
+      "question": "Which Northwind Cloud region had the April 2026 power fault?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "eu-west-2",
+      "gold_answers": [
+        "eu-west-2"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-rca",
+        "syn-nw-status"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.49,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s08",
+      "category": "simple",
+      "question": "How many accounts were targeted in the SEC-221 credential stuffing attack?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "3,140 accounts",
+      "gold_answers": [
+        "3,140",
+        "3140"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.6666666666666666,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-hal-alert"
+      ],
+      "gold_docs": [
+        "syn-hal-alert"
+      ],
+      "llm_calls": 2,
+      "seconds": 79.11,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s09",
+      "category": "simple",
+      "question": "When was Orbit Mobile 5.4 released?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "2026-05-19",
+      "gold_answers": [
+        "2026-05-19",
+        "19 May 2026",
+        "May 19, 2026"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.74,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-s10",
+      "category": "simple",
+      "question": "What feature did Orbit Mobile 5.4 add?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "It added an offline mode for saved trips.",
+      "gold_answers": [
+        "offline mode",
+        "an offline mode for saved trips"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.8333333333333333,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.25,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-m01",
+      "category": "multi_step",
+      "question": "Which change caused incident INC-7781, and who approved that change?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The incident was caused by change CHG-0412, which was approved by Dana Whitfield.",
+      "gold_answers": [
+        "CHG-0412, approved by Dana Whitfield",
+        "CHG-0412 Dana Whitfield"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.5882352941176471,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-inc-7781",
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-chg-0412"
+      ],
+      "llm_calls": 4,
+      "seconds": 4.05,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-m02",
+      "category": "multi_step",
+      "question": "What minimum pool size does the runbook require at peak, compared with the pool.max set by the change behind INC-7781?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The runbook requires at least 60 connections at peak, which is 40 more than the pool.max of 20 set by the change behind INC-7781.",
+      "gold_answers": [
+        "at least 60 versus 20",
+        "60 vs 20"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.3076923076923077,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.6666666666666666,
+      "cited_docs": [
+        "syn-runbook-pool",
+        "syn-chg-0412"
+      ],
+      "gold_docs": [
+        "syn-runbook-pool",
+        "syn-chg-0412",
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.4,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-d01",
+      "category": "multi_document",
+      "question": "Of the changes made at Larkspur Pay on 3 March 2026, which one modified backend services?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "None of the changes made on 3\u202fMarch\u202f2026 modified backend services.",
+      "gold_answers": [
+        "CHG-0412"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-chg-0415"
+      ],
+      "gold_docs": [
+        "syn-chg-0412",
+        "syn-chg-0415"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.75,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-d02",
+      "category": "multi_document",
+      "question": "Which services failed during the payment outage caused by CHG-0412, and was the payouts service affected?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The checkout-service and refund-service failed, and the payouts service was not affected.",
+      "gold_answers": [
+        "checkout-service and refund-service failed; payouts was not affected"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.888888888888889,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-pm-7781"
+      ],
+      "gold_docs": [
+        "syn-pm-7781",
+        "syn-inc-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 6.01,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u01",
+      "category": "unanswerable",
+      "question": "Who approved the Meridian Freight contract renewal?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.09,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "syn-u02",
+      "category": "unanswerable",
+      "question": "On what date was the Meridian Freight renewal signed?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-meridian-draft",
+        "syn-meridian-email"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.54,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "syn-u03",
+      "category": "unanswerable",
+      "question": "What caused the Pier 9 warehouse fire?",
+      "expected_status": "insufficient",
+      "status": "answered",
+      "answer": "The cause of the Pier 9 warehouse fire has not been determined and is still under investigation.",
+      "gold_answers": [],
+      "correct": false,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-insurer"
+      ],
+      "gold_docs": [
+        "syn-fire-insurer"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.36,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u04",
+      "category": "unanswerable",
+      "question": "How much revenue did Larkspur Pay lose because of incident INC-7781?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.8,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "syn-u05",
+      "category": "unanswerable",
+      "question": "Which attacker group was behind security incident SEC-221?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-hal-alert",
+        "syn-hal-final"
+      ],
+      "llm_calls": 2,
+      "seconds": 5.67,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "syn-u06",
+      "category": "unanswerable",
+      "question": "When will Orbit Mobile 6.0 be released?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-orbit-notes"
+      ],
+      "llm_calls": 4,
+      "seconds": 9.39,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u07",
+      "category": "unanswerable",
+      "question": "How many Northwind Cloud customers were affected by the eu-west-2 power fault?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 4,
+      "seconds": 7.34,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u08",
+      "category": "unanswerable",
+      "question": "Who was the incident commander for INC-7781?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781"
+      ],
+      "llm_calls": 4,
+      "seconds": 36.88,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c01",
+      "category": "contradictory",
+      "question": "At what time did the fire alarm sound at the Pier 9 warehouse?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 12.23,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c02",
+      "category": "contradictory",
+      "question": "When was the Pier 9 warehouse fire contained?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 13.88,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c03",
+      "category": "contradictory",
+      "question": "Was anyone injured in the Pier 9 warehouse fire?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 13.29,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c04",
+      "category": "contradictory",
+      "question": "How long did the Northwind Cloud eu-west-2 outage last?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 15.87,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c05",
+      "category": "contradictory",
+      "question": "When did Northwind Cloud services fully recover after the eu-west-2 power fault?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 14.4,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c06",
+      "category": "contradictory",
+      "question": "Were any accounts compromised in security incident SEC-221?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "Conflicting reports on account compromise.",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-hal-alert",
+        "syn-hal-final"
+      ],
+      "gold_docs": [
+        "syn-hal-alert",
+        "syn-hal-final"
+      ],
+      "llm_calls": 2,
+      "seconds": 14.63,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c07",
+      "category": "contradictory",
+      "question": "What is the minimum iOS version required by Orbit Mobile 5.4?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support"
+      ],
+      "llm_calls": 2,
+      "seconds": 15.11,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c08",
+      "category": "contradictory",
+      "question": "At what time did the INC-7781 payment outage begin?",
+      "expected_status": "conflict",
+      "status": "answered",
+      "answer": "The INC-7781 payment outage began on 2026-03-03 at 16:10\u202fUTC.",
+      "gold_answers": [],
+      "correct": false,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-status-0303"
+      ],
+      "llm_calls": 2,
+      "seconds": 13.96,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70eee85542994082a3e3f0",
+      "category": "multi_step",
+      "question": "Which group of people in West Africa with significant populations in Ghana, Ivory Coast, Liberia and Sierra Leone use the Ida?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The Yoruba people use the Ida.",
+      "gold_answers": [
+        "The Yoruba"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.4,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-d1857d41a816b587",
+        "hp-8d509318c3478fa5"
+      ],
+      "gold_docs": [
+        "hp-8d509318c3478fa5",
+        "hp-d1857d41a816b587"
+      ],
+      "llm_calls": 2,
+      "seconds": 14.12,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f0a75542994082a3e403",
+      "category": "multi_step",
+      "question": "Which dialect spoken in the province of Scania calls Spettekaka, \"spiddekaga\"?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The Scanian dialect spoken in the province of Scania calls Spettekaka \"spiddekaga\".",
+      "gold_answers": [
+        "Scanian dialects"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.16666666666666669,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-66d1f2fbe757ce1f",
+        "hp-b44a927c070e7cab"
+      ],
+      "gold_docs": [
+        "hp-66d1f2fbe757ce1f",
+        "hp-b44a927c070e7cab"
+      ],
+      "llm_calls": 2,
+      "seconds": 13.08,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f1685542994082a3e40f",
+      "category": "multi_step",
+      "question": "Which piece did Ludwig van Beethoven publish in 1801 that was dedicated to Count Moritz von Fries? ",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Violin Sonata No.\u202f4 in A minor, Op.\u202f23",
+      "gold_answers": [
+        "Symphony No. 7"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.18181818181818182,
+      "evidence_recall": 1.0,
+      "citation_precision": 0.0,
+      "citation_recall": 0.0,
+      "cited_docs": [
+        "hp-2d9dfd6bcbb14813"
+      ],
+      "gold_docs": [
+        "hp-996521c38f6adcf1",
+        "hp-2863ca4c9f64cea0"
+      ],
+      "llm_calls": 2,
+      "seconds": 14.22,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f39c5542994082a3e429",
+      "category": "multi_step",
+      "question": "What is the name of the independent candidate in Maine's 2010 gubernatorial race who finished ahead of Libby Mitchell?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Eliot Cutler",
+      "gold_answers": [
+        "Eliot Cutler"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-c2cb0997e764d694",
+        "hp-79dee8ae2a535487"
+      ],
+      "gold_docs": [
+        "hp-c2cb0997e764d694",
+        "hp-79dee8ae2a535487"
+      ],
+      "llm_calls": 2,
+      "seconds": 15.59,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f4c45542994082a3e437",
+      "category": "multi_step",
+      "question": "Which Italian-American composer and librettist wrote the English language opera, Maria Golovin?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Gian Carlo Menotti",
+      "gold_answers": [
+        "Gian Carlo Menotti"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-eb7b99a557b536d8",
+        "hp-ab4ef32cf9426048"
+      ],
+      "gold_docs": [
+        "hp-eb7b99a557b536d8",
+        "hp-ab4ef32cf9426048"
+      ],
+      "llm_calls": 2,
+      "seconds": 15.22,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f6425542994082a3e44c",
+      "category": "multi_step",
+      "question": "Renamed in 2014, what was the vehicle offered as a prize to contestants on the first season of The Amazing Race Canada?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Chevrolet Corvette Stingray",
+      "gold_answers": [
+        "Chevrolet Corvette Stingrays"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.6666666666666666,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-898ac9a00c9d991f",
+        "hp-63ce7f75c2c558fb"
+      ],
+      "gold_docs": [
+        "hp-898ac9a00c9d991f",
+        "hp-63ce7f75c2c558fb"
+      ],
+      "llm_calls": 4,
+      "seconds": 11.27,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70ff335542994082a3e49c",
+      "category": "multi_step",
+      "question": "Which Indian actress who earned filmfare award for Best female debut in \"Refugee\" acted in K3G movie?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Kareena Kapoor",
+      "gold_answers": [
+        "Kareena Kapoor Khan"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.8,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-373c89f4762728e0"
+      ],
+      "gold_docs": [
+        "hp-373c89f4762728e0",
+        "hp-f753456bdf856f29"
+      ],
+      "llm_calls": 4,
+      "seconds": 288.09,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a71095e5542994082a3e4f3",
+      "category": "multi_step",
+      "question": "What is the name of Bruce Willis's character in Unbreakable?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "David Dunn",
+      "gold_answers": [
+        "David Dunn"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-1ec10460fb7fb2da"
+      ],
+      "gold_docs": [
+        "hp-7f7dcceb289e8023",
+        "hp-1ec10460fb7fb2da"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.54,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f0e75542994082a3e408",
+      "category": "multi_document",
+      "question": "Which of these universities, Northwestern University or Johns Hopkins University, have a campus outside of the United States territories?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Northwestern University has a campus outside of the United States territories (in Doha, Qatar); Johns Hopkins University does not have a campus outside of the United States territories.",
+      "gold_answers": [
+        "with other campuses located in Chicago and Doha, Qatar"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.18181818181818182,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-ccdeb7b2959ec1c7",
+        "hp-21e31fc423ef90fe"
+      ],
+      "gold_docs": [
+        "hp-ccdeb7b2959ec1c7",
+        "hp-21e31fc423ef90fe"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.49,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f11a5542994082a3e40b",
+      "category": "multi_document",
+      "question": "Which dog breed, the Schapendoes or the Bull Terrier, has its origins in a greater number of other dog breeds?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "Bull Terrier"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "hp-a7cc102e780ba298",
+        "hp-eb90a455c613ea68"
+      ],
+      "llm_calls": 4,
+      "seconds": 69.18,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f4695542994082a3e435",
+      "category": "multi_document",
+      "question": "Which canal was built between 1836 and 1847, Washington City Canal or Whitewater Canal?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Whitewater Canal",
+      "gold_answers": [
+        "The Whitewater Canal"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-2846a4a8ba657ce5"
+      ],
+      "gold_docs": [
+        "hp-40d05c1b949f2c82",
+        "hp-2846a4a8ba657ce5"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.63,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f9335542994082a3e46a",
+      "category": "multi_document",
+      "question": "Which magazine is published more in a year, Essence or Alt for Damerne?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Alt for Damerne is published more in a year than Essence.",
+      "gold_answers": [
+        "ALT for Damerne"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.4615384615384615,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-7c0a52c29bb9c6a2",
+        "hp-3de9e4713d2ecec0"
+      ],
+      "gold_docs": [
+        "hp-7c0a52c29bb9c6a2",
+        "hp-3de9e4713d2ecec0"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.02,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7100435542994082a3e4a3",
+      "category": "multi_document",
+      "question": " Are Finding Kraftland and Shikashika both frozen drinks?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "No",
+      "gold_answers": [
+        "Shikashika is a shaved ice drink"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-70341b94bd954e06",
+        "hp-03851bd5cd014ca0"
+      ],
+      "gold_docs": [
+        "hp-70341b94bd954e06",
+        "hp-03851bd5cd014ca0"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.71,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7103b35542994082a3e4c0",
+      "category": "multi_document",
+      "question": "Which mountain, Masherbrum or Khunyang Chhish, is a taller mountain?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Khunyang Chhish is taller than Masherbrum.",
+      "gold_answers": [
+        "Khunyang Chhish"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.5,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-5d99abeaad9ce95c",
+        "hp-5d0f82337c9cba98"
+      ],
+      "gold_docs": [
+        "hp-5d0f82337c9cba98",
+        "hp-5d99abeaad9ce95c"
+      ],
+      "llm_calls": 2,
+      "seconds": 21.46,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7108fa5542994082a3e4ef",
+      "category": "multi_document",
+      "question": "Which battle, the Battle of Cold Harbor, or the Second Battle of Bull Run, was fought first?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The Second Battle of Bull Run was fought first",
+      "gold_answers": [
+        "Second Battle of Bull Run"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.7692307692307693,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-a30f6f5b749031da",
+        "hp-8841bb365d53cc32"
+      ],
+      "gold_docs": [
+        "hp-8841bb365d53cc32",
+        "hp-a30f6f5b749031da"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.44,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a710a915542994082a3e504",
+      "category": "multi_document",
+      "question": "Which of these men, Scott Treleaven and Edmund Mortimer, is credited with working in both films and photography?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Scott Treleaven",
+      "gold_answers": [
+        "Scott Treleaven"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-da21e9905325bd4c"
+      ],
+      "gold_docs": [
+        "hp-da21e9905325bd4c",
+        "hp-7d5d0e73f3d617ae"
+      ],
+      "llm_calls": 2,
+      "seconds": 416.45,
+      "error": "",
+      "warnings": []
+    }
+  ],
+  "llm": "groq:openai/gpt-oss-120b"
+}
