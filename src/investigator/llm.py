@@ -208,6 +208,8 @@ class ScriptedLLM:
     def complete_json(self, system: str, user: str) -> dict:
         self.prompts.append((system, user))
         self.usage.calls += 1
+        self.usage.input_tokens += (len(system) + len(user)) // 4  # rough 4-chars-per-token estimate
+        self.usage.output_tokens += 50
         if not self.responses:
             raise LLMBadOutput("scripted LLM has no response left")
         item = self.responses.pop(0)

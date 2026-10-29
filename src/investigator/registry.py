@@ -12,6 +12,7 @@ from sqlalchemy import (
     JSON,
     Column,
     DateTime,
+    Float,
     Integer,
     MetaData,
     String,
@@ -61,6 +62,23 @@ chunks = Table(
     Column("sentence_start", Integer, nullable=False),
     Column("sentence_end", Integer, nullable=False),
     Column("page", Integer, nullable=True),
+)
+
+
+# One row per investigation that called the LLM: what it cost, never what was asked (the live
+# page is public, so questions are not stored).
+llm_usage = Table(
+    "llm_usage",
+    metadata_obj,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("created_at", DateTime(timezone=True), nullable=False, index=True),
+    Column("model", String(100), nullable=False),
+    Column("status", String(20), nullable=False),
+    Column("mode", String(20), nullable=False),
+    Column("calls", Integer, nullable=False),
+    Column("input_tokens", Integer, nullable=False),
+    Column("output_tokens", Integer, nullable=False),
+    Column("seconds", Float, nullable=False),
 )
 
 
@@ -323,3 +341,19 @@ class Registry:
             q = q.where(chunks.c.strategy == strategy)
         with self.engine.connect() as conn:
             return conn.execute(q).scalar_one()
+
+    # ---- LLM usage (analytics) ------------------------------------------------------------
+    def record_usage(self, model: str, status: str, mode: str, calls: int, input_tokens: int,
+                     output_tokens: int, seconds: float, at: datetime | None = None) -> None:
+        row = dict(created_at=at or _now(), model=model or "unknown", status=status, mode=mode,
+                   calls=calls, input_tokens=input_tokens, output_tokens=output_tokens, seconds=seconds)
+        with self.engine.begin() as conn:
+            conn.execute(insert(llm_usage), row)
+
+    def usage_rows(self, since: datetime | None = None) -> list[dict]:
+        """Usage rows, oldest first. Small table (one row per question), so callers aggregate in Python."""
+        q = select(llm_usage).order_by(llm_usage.c.created_at)
+        if since is not None:
+            q = q.where(llm_usage.c.created_at >= since)
+        with self.engine.connect() as conn:
+            return [dict(r._mapping) for r in conn.execute(q)]

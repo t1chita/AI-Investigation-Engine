@@ -53,8 +53,9 @@ question -> LLM plan: up to 3 search queries
 | `ingestion.py`, `bulk.py` | add / update / delete / duplicates / retry; resumable bulk load with reconciliation |
 | `llm.py` | Groq and Gemini clients (JSON mode), retries with backoff, error types, token usage |
 | `investigate.py` | the multi-step pipeline, tool registry, citation and conflict validation |
-| `api.py` | FastAPI: `/documents` (CRUD + upload), `/search`, `/investigate`, `/health`, and the web page at `/` |
-| `web/index.html` | UI (plain HTML + JS): investigate, inspect cited sentences in their source, manage documents, raw search |
+| `api.py` | FastAPI: `/documents` (CRUD + upload), `/search`, `/investigate`, `/analytics`, `/health`, and the web page at `/` |
+| `analytics.py`, `pricing.py` | LLM usage per question (tokens, calls, model) and its cost at other models' list prices |
+| `web/index.html` | UI (plain HTML + JS): investigate, inspect cited sentences in their source, manage documents, raw search, analytics |
 | `hotpotqa.py`, `evaluation.py` | corpus and question bank, metrics, evaluation runners |
 
 Why the stores stay consistent: the registry is the single source of truth. A document is
@@ -83,7 +84,7 @@ Python 3.11+ (developed on 3.12, Apple Silicon).
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,data]"    # server + local Qdrant + dataset tools
 cp .env.example .env            # defaults: local SQLite + local Qdrant, no LLM
-pytest                          # 60 tests, about 1 second, no network
+pytest                          # 64 tests, about 1 second, no network
 python scripts/ingest_hotpotqa.py   # about 6.5 min on an M-series Mac; resumable
 uvicorn investigator.api:app --port 8000   # UI at http://localhost:8000, API docs at /docs
 ```
@@ -134,6 +135,15 @@ entity (`CHG-0412`), and keyword search finds that where MiniLM often does not.
 
 Full tables, the 46-question bank, failure analysis by cause and limitations:
 [docs/evaluation-report.md](docs/evaluation-report.md).
+
+**Analytics page.** Every question answered by the live app records its LLM calls, input and
+output tokens, model, outcome and duration in the registry (`llm_usage` table; the question
+text is not stored). The Analytics view shows the totals, tokens per day, use of the free
+daily token limit, and a cost calculator. The calculator prices the measured tokens per question
+(about 1,550 input + 440 output, 2 LLM calls) at the paid list prices of other models (Groq, OpenAI,
+Google, Anthropic; collected 29 October 2026, to be checked on the providers' pages). At those
+prices our model, `gpt-oss-120b`, would cost about $0.0005 per question ($0.50 per 1,000).
+Only the Groq models were evaluated for answer quality.
 
 ## Deployment (free tiers)
 

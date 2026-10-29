@@ -45,6 +45,11 @@ def test_full_document_workflow(client):
     ]
     result = c.post("/investigate", json={"question": "Which release cut the pool?"}).json()
     assert result["status"] == "answered" and result["evidence"][0]["doc_id"] == doc_id
+    assert result["input_tokens"] > 0 and result["output_tokens"] == 100  # 2 scripted calls x 50
+
+    stats = c.get("/analytics").json()
+    assert stats["totals"]["questions"] == 1 and stats["totals"]["calls"] == 2
+    assert stats["by_model"][0]["model"] == "scripted" and stats["prices"]
 
     detail = c.get(f"/documents/{doc_id}").json()
     assert detail["version"] == 1 and detail["text_sentences"][1]["text"].startswith("Release v2.18")

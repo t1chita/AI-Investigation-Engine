@@ -20,6 +20,7 @@ from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
+from .analytics import summarize
 from .factory import Components, build
 from .ingestion import DocumentNotFound, IndexingError
 from .investigate import Investigator
@@ -230,4 +231,19 @@ class InvestigateRequest(BaseModel):
 def investigate(req: InvestigateRequest):
     strategy = _strategy(req.strategy)
     result = Investigator(C().index, STATE.get("llm"), strategy=strategy, mode=req.mode).run(req.question)
+    if result.llm_calls:
+        try:  # analytics must never break an answer
+            C().registry.record_usage(result.llm_model, result.status, req.mode, result.llm_calls,
+                                      result.input_tokens, result.output_tokens, result.seconds)
+        except Exception as exc:  # noqa: BLE001 - logged in the answer, not raised
+            result.warnings.append(f"usage not recorded: {type(exc).__name__}")
     return result.to_dict()
+
+
+@app.get("/analytics")
+def analytics(days: int = Query(14, ge=1, le=90)):
+    """LLM usage of the live app (tokens, calls, models) and what it would cost on other models."""
+    llm = STATE.get("llm")
+    out = summarize(C().registry.usage_rows(), days=days)
+    out["current_model"] = getattr(llm, "models", [getattr(llm, "model", None)])[0] if llm else None
+    return out

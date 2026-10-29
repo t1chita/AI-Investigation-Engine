@@ -22,6 +22,7 @@ action name against the tool registry and validate its arguments before running 
 the same with every provider and keeps the model inside a fixed menu of actions.
 """
 
+import time
 from dataclasses import asdict, dataclass, field
 
 from .llm import LLMError
@@ -121,6 +122,9 @@ class InvestigationResult:
     error: str = ""
     llm_calls: int = 0
     llm_model: str = ""  # the model that produced the answer (may be a fallback)
+    input_tokens: int = 0  # prompt tokens over all LLM calls of this question
+    output_tokens: int = 0
+    seconds: float = 0.0
 
     def cited_evidence(self) -> list[Evidence]:
         used = {e for c in self.claims for e in c.evidence} | {e for c in self.conflicts for e in c.evidence}
@@ -231,7 +235,11 @@ class Investigator:
             result.error = "empty question"
             return result
 
-        calls_before = self.llm.usage.calls if self.llm is not None else 0
+        started = time.monotonic()
+        usage = getattr(self.llm, "usage", None)
+        calls_before, in_before, out_before = (
+            (usage.calls, usage.input_tokens, usage.output_tokens) if usage else (0, 0, 0)
+        )
         model_before = getattr(self.llm, "model", "")
         searches = [question]
         if self.llm is not None:
@@ -269,6 +277,9 @@ class Investigator:
             result.status = "error"
             result.error = f"{type(exc).__name__}: {exc}"
         result.llm_calls = self.llm.usage.calls - calls_before
+        result.input_tokens = self.llm.usage.input_tokens - in_before
+        result.output_tokens = self.llm.usage.output_tokens - out_before
+        result.seconds = round(time.monotonic() - started, 2)
         result.llm_model = getattr(self.llm, "model", "")
         if model_before and result.llm_model != model_before:
             result.warnings.append(
