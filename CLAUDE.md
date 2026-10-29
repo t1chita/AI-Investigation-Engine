@@ -145,7 +145,7 @@ shell. Local Qdrant allows one process at a time: stop the API before running in
 | Slim server (≤ 512 MB) | yes | yes (local, cloud data) | 359 MB; 56 tests; clean-venv install without torch |
 | Deployment + persistence | yes | yes | https://ai-investigation-engine-3faf.onrender.com; 334–336 MB, start-up 93–102 s; test doc survived container replacement (README) |
 | LLM fallback on daily quota | yes | yes (live) | gpt-oss-120b → gpt-oss-20b → qwen3.8-27b; evaluation uses no fallback |
-| README, evaluation report | yes | – | submission-ready 28 Oct; AI usage report drafted, needs the developer's own sections |
+| README, evaluation report, AI usage report | yes | – | all three submission documents complete (29 Oct) |
 
 Local data (git-ignored): `data/registry.db` (SQLite, 208 MB), `data/qdrant/` (1 GB, both
 strategies). Rebuild with `python scripts/ingest_hotpotqa.py` (about 6.5 min, resumable).
