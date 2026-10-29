@@ -2,11 +2,10 @@
 
 Status (28 October 2026):
 - **Retrieval evaluation:** complete (500 + 46 questions, 2 chunkers × 3 modes).
-- **Answer evaluation, run 1:** complete for both configurations. This is the official
-  comparison of the two configurations.
-- **Answer evaluation, run 2:** after the pipeline fixes. Complete for the main configuration
-  (46/46). The comparison configuration stopped at 20/46 on Groq's free daily token limit (see
-  "Run 2" below).
+- **Answer evaluation, run 1:** complete for both configurations. It is the baseline, and the
+  failure analysis is based on it.
+- **Answer evaluation, run 2:** complete for both configurations (46/46 each, finished 29
+  October). It was run after the pipeline fixes that run 1's failures called for.
 
 Every number was produced by `scripts/evaluate.py` on the local index. Raw per-question results:
 `eval/results/run1/` (run 1), `eval/results/answers_*.json` (run 2), `eval/results/retrieval_*.json`.
@@ -99,7 +98,7 @@ multi-document 0.95, unanswerable 1.00 (the related documents are found), contra
   ("elevated checkout errors since 16:25"). Improvements: query expansion by the planner, a
   stronger embedding model, or metadata linking (date, company).
 
-## End-to-end answer evaluation, run 1 (official comparison)
+## End-to-end answer evaluation, run 1 (baseline)
 
 LLM: `openai/gpt-oss-120b` on Groq's free tier (temperature 0, JSON mode). Same 46 questions,
 same LLM, same pipeline limits (plan ≤ 3 searches, ≤ 2 follow-up searches, 5 results per search,
@@ -181,7 +180,7 @@ Items 1 and 5 were done before run 2 (below); the others are still open.
 5. **Fix the two weak synthetic conflicts** (c04/c05) and re-run.
 6. **A stronger embedding model** (BM25 beats MiniLM here), then re-measure retrieval.
 
-## Answer evaluation, run 2 (after the fixes; partial)
+## Answer evaluation, run 2 (after the fixes)
 
 What changed between run 1 and run 2 (same 46 questions, same LLM, same labels):
 1. **Second chance before abstaining.** When the model answers "insufficient", the pipeline asks
@@ -200,52 +199,59 @@ produced. Two questions (syn-s01, syn-s02) first failed with a network error
 (`LLMUnavailable: ConnectError`: the machine lost its connection, so these are not model
 answers). They were removed and asked again. No other answer was edited or re-asked.
 
-### sentence-hybrid: complete (46/46)
+### Results, both configurations (46/46 each)
 
-| Metric | Run 1 | Run 2 |
-| --- | ---: | ---: |
-| Answer correctness (all 46) | 0.717 (33/46) | **0.804 (37/46)** |
-| simple (10) | 1.00 | 1.00 |
-| multi-step (10) | 0.40 | **0.70** |
-| multi-document (10) | 0.60 | 0.60 |
-| unanswerable (8) | 0.875 | 0.875 |
-| contradictory (8) | 0.75 | **0.875** |
-| EM, answerable | **0.467** | 0.433 |
-| F1, answerable | 0.628 | **0.680** |
-| Evidence recall | 0.946 | **0.967** |
-| Citation precision | 0.946 | **0.974** |
-| Citation recall, answerable | 0.756 | **0.822** |
-| LLM calls | 92 | 106 |
+| Metric | sentence-hybrid run 1 | sentence-hybrid run 2 | fixed-semantic run 1 | fixed-semantic run 2 |
+| --- | ---: | ---: | ---: | ---: |
+| Answer correctness (all 46) | 0.717 (33) | **0.804 (37)** | 0.674 (31) | 0.739 (34) |
+| simple (10) | 1.00 | **1.00** | 0.90 | 0.90 |
+| multi-step (10) | 0.40 | **0.70** | 0.30 | 0.40 |
+| multi-document (10) | 0.60 | 0.60 | **0.70** | **0.70** |
+| unanswerable (8) | 0.875 | 0.875 | 0.875 | 0.875 |
+| contradictory (8) | 0.75 | **0.875** | 0.625 | **0.875** |
+| EM, answerable | **0.467** | 0.433 | 0.400 | 0.367 |
+| F1, answerable | 0.628 | **0.680** | 0.565 | 0.556 |
+| Evidence recall | 0.946 | **0.967** | 0.895 | 0.866 |
+| Citation precision | 0.946 | **0.974** | **0.971** | 0.957 |
+| Citation recall, answerable | 0.756 | **0.822** | 0.656 | 0.644 |
+| LLM calls | 92 | 106 | 93 | 110 |
+| LLM errors | 0 | 0 | 0 | 0 |
 
-Per question: **4 questions went from wrong to right, and none went from right to wrong.**
-- syn-m01 (INC-7781 → CHG-0412 → approver): run 1 abstained. Run 2 searched for CHG-0412 and
-  answered "CHG-0412, approved by Dana Whitfield", citing both documents.
-- The Corvette and Kareena Kapoor bridge questions: the second hop was found by a follow-up search.
-- syn-c05: now reported as a conflict, after the rewrite in change 3.
+In both configurations, **no question went from right to wrong.** The questions that went from
+wrong to right are split by cause below, because one of the three changes was to test data
+rather than to the pipeline:
 
-The cost is 14 more LLM calls (+15%) for the extra searches. EM fell slightly (0.467 → 0.433)
-while F1 rose, because some answers are now longer and cite more.
+| Question | sentence-hybrid | fixed-semantic | Cause |
+| --- | :---: | :---: | --- |
+| syn-m01 (INC-7781 → CHG-0412 → approver) | fixed | still wrong | pipeline |
+| Corvette bridge question | fixed | still wrong | pipeline |
+| Kareena Kapoor bridge question | fixed | fixed | pipeline |
+| syn-c05 (Northwind recovery time) | fixed | fixed | rewritten document |
+| syn-c04 (Northwind outage length) | already right | fixed | rewritten document |
+| **Gain from the pipeline changes** | **+3** | **+1** | |
+| Gain from the rewritten document | +1 | +2 | |
 
-Still wrong (9): syn-m02, syn-u03 and two HotpotQA questions are the grading or label cases
-listed for run 1. The others are syn-d01 and syn-c08 (a needed document is never retrieved),
-one more bridge question, and two comparison questions (one side is crowded out). These match
-open items 2–4 above.
+**Reading the comparison.**
+1. **sentence-hybrid stays ahead** of fixed-semantic in both runs: 37 vs 34 questions in run 2,
+   and 33 vs 31 in run 1. It also leads on evidence recall and citation recall. Run 2 confirms
+   the run 1 result with the same pipeline used for both configurations.
+2. **The pipeline fix helps much more with hybrid retrieval: +3 questions against +1.** A
+   follow-up search usually names an exact entity found in the first evidence, such as
+   `CHG-0412` or "Chevrolet Corvette". BM25 matches that exactly, and MiniLM often does not. On
+   fixed-semantic syn-m01, the extra search ran (4 LLM calls), but `CHG-0412` was still not
+   retrieved, so the answer stayed "insufficient". The same happened on syn-s03 ("CHG-0412
+   approval"). A second chance is only as good as the search it triggers.
+3. **The cost** is 14–17 more LLM calls per configuration (+15–18%) for the extra searches.
+   EM fell slightly in both configurations while correctness rose, because some answers are now
+   longer.
+4. **fixed-semantic's evidence recall fell a little** (0.895 → 0.866). The likely cause is that the first
+   searches now fill 8 slots instead of 10, and its semantic-only follow-up searches did not make
+   up the difference. With hybrid retrieval the follow-ups more than made up for it.
 
-### fixed-semantic: partial (20/46, stopped by the daily token limit)
-
-The 20 questions answered so far are 10 simple, 2 multi-step, 2 multi-document and 6
-unanswerable. On these 20 questions, run 1 and run 2 are both correct on 16 of 20 (0.80). An
-overall score from 20 questions would not be comparable with run 1's 46, so it is not given.
-
-One result here is useful even though the run is partial. **The second chance does not help
-when retrieval cannot find the hop.** On syn-m01 the extra search ran (4 LLM calls), but the
-document `CHG-0412` was still not retrieved, so the answer stayed "insufficient". On syn-s03, a
-semantic search for "CHG-0412 approval" also failed to find it. An exact identifier like
-CHG-0412 is what BM25 matches and MiniLM does not. The same question succeeds with hybrid
-retrieval. This supports the retrieval finding that keyword search must stay in the pipeline.
-
-The remaining 26 questions can be run with `python scripts/evaluate.py answers`. The command
-resumes from the saved file.
+Still wrong in sentence-hybrid (9): syn-m02, syn-u03 and two HotpotQA questions are the grading
+or label cases listed for run 1. The others are syn-d01 and syn-c08 (a needed document is never
+retrieved), one more bridge question, and two comparison questions (one side is crowded out).
+These match open items 2–4 above.
 
 ## Limitations
 
@@ -256,7 +262,7 @@ resumes from the saved file.
 - No confidence intervals. The 500-question set makes the retrieval numbers fairly stable, and
   the 46-question numbers less so: one question is about 2 percentage points. Run 2 changed the
   pipeline and one test document at the same time, so its gain cannot be split exactly between
-  the two. Only syn-c04/c05 use the rewritten document, and of those only syn-c05 changed result.
+  the two exactly. The split by question above shows which gains come from each.
 - Answer correctness uses string matching (contains or F1 ≥ 0.5), which under-counts correct but
   differently worded answers (5 such cases listed above).
 - Only one LLM was evaluated; the free-tier token limit makes larger answer runs slow (about

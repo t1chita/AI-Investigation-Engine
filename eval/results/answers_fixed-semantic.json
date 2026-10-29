@@ -1,21 +1,22 @@
 {
   "config": "fixed-semantic",
-  "complete": false,
-  "n": 20,
+  "complete": true,
+  "n": 46,
   "summary": {
-    "answer_correctness": 0.8,
-    "em_answerable": 0.42857142857142855,
-    "f1_answerable": 0.6366213151927438,
-    "evidence_recall": 0.8916666666666666,
-    "citation_precision": 0.9642857142857143,
-    "citation_recall_answerable": 0.7738095238095238,
+    "answer_correctness": 0.7391304347826086,
+    "em_answerable": 0.36666666666666664,
+    "f1_answerable": 0.5564183964183964,
+    "evidence_recall": 0.8659420289855073,
+    "citation_precision": 0.9571428571428572,
+    "citation_recall_answerable": 0.6444444444444444,
     "errors": 0,
-    "llm_calls": 52,
+    "llm_calls": 110,
     "by_category": {
       "simple": 0.9,
-      "multi_step": 0.0,
-      "multi_document": 1.0,
-      "unanswerable": 0.8333333333333334
+      "multi_step": 0.4,
+      "multi_document": 0.7,
+      "unanswerable": 0.875,
+      "contradictory": 0.875
     }
   },
   "rows": [
@@ -559,6 +560,721 @@
       ],
       "llm_calls": 4,
       "seconds": 4.08,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u07",
+      "category": "unanswerable",
+      "question": "How many Northwind Cloud customers were affected by the eu-west-2 power fault?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 3,
+      "seconds": 3.43,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-u08",
+      "category": "unanswerable",
+      "question": "Who was the incident commander for INC-7781?",
+      "expected_status": "insufficient",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-pm-7781"
+      ],
+      "llm_calls": 4,
+      "seconds": 3.44,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c01",
+      "category": "contradictory",
+      "question": "At what time did the fire alarm sound at the Pier 9 warehouse?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 6.29,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c02",
+      "category": "contradictory",
+      "question": "When was the Pier 9 warehouse fire contained?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 14.45,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c03",
+      "category": "contradictory",
+      "question": "Was anyone injured in the Pier 9 warehouse fire?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-fire-news",
+        "syn-fire-dispatch"
+      ],
+      "gold_docs": [
+        "syn-fire-dispatch",
+        "syn-fire-news"
+      ],
+      "llm_calls": 2,
+      "seconds": 13.27,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c04",
+      "category": "contradictory",
+      "question": "How long did the Northwind Cloud eu-west-2 outage last?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 16.41,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c05",
+      "category": "contradictory",
+      "question": "When did Northwind Cloud services fully recover after the eu-west-2 power fault?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "gold_docs": [
+        "syn-nw-status",
+        "syn-nw-rca"
+      ],
+      "llm_calls": 2,
+      "seconds": 30.68,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c06",
+      "category": "contradictory",
+      "question": "Were any accounts compromised in security incident SEC-221?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-hal-final",
+        "syn-hal-alert"
+      ],
+      "gold_docs": [
+        "syn-hal-alert",
+        "syn-hal-final"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.81,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c07",
+      "category": "contradictory",
+      "question": "What is the minimum iOS version required by Orbit Mobile 5.4?",
+      "expected_status": "conflict",
+      "status": "conflict",
+      "answer": "",
+      "gold_answers": [],
+      "correct": true,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support"
+      ],
+      "gold_docs": [
+        "syn-orbit-notes",
+        "syn-orbit-support"
+      ],
+      "llm_calls": 2,
+      "seconds": 28.52,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "syn-c08",
+      "category": "contradictory",
+      "question": "At what time did the INC-7781 payment outage begin?",
+      "expected_status": "conflict",
+      "status": "answered",
+      "answer": "The outage began at 16:10\u202fUTC on 2026\u201103\u201103.",
+      "gold_answers": [],
+      "correct": false,
+      "em": null,
+      "f1": null,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "syn-inc-7781"
+      ],
+      "gold_docs": [
+        "syn-inc-7781",
+        "syn-status-0303"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.86,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70eee85542994082a3e3f0",
+      "category": "multi_step",
+      "question": "Which group of people in West Africa with significant populations in Ghana, Ivory Coast, Liberia and Sierra Leone use the Ida?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "The Yoruba"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "hp-8d509318c3478fa5",
+        "hp-d1857d41a816b587"
+      ],
+      "llm_calls": 4,
+      "seconds": 4.32,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f0a75542994082a3e403",
+      "category": "multi_step",
+      "question": "Which dialect spoken in the province of Scania calls Spettekaka, \"spiddekaga\"?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The native Scanian dialect (the Scanian dialect spoken in Scania) calls Spettekaka \u201cspiddekaga\u201d.",
+      "gold_answers": [
+        "Scanian dialects"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.15384615384615385,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-66d1f2fbe757ce1f"
+      ],
+      "gold_docs": [
+        "hp-66d1f2fbe757ce1f",
+        "hp-b44a927c070e7cab"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.19,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f1685542994082a3e40f",
+      "category": "multi_step",
+      "question": "Which piece did Ludwig van Beethoven publish in 1801 that was dedicated to Count Moritz von Fries? ",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Violin Sonata No.\u202f4 in A minor, Op.\u202f23, and Violin Sonata No.\u202f5 in F major, Op.\u202f24",
+      "gold_answers": [
+        "Symphony No. 7"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.09523809523809525,
+      "evidence_recall": 1.0,
+      "citation_precision": 0.5,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-2d9dfd6bcbb14813",
+        "hp-996521c38f6adcf1"
+      ],
+      "gold_docs": [
+        "hp-996521c38f6adcf1",
+        "hp-2863ca4c9f64cea0"
+      ],
+      "llm_calls": 2,
+      "seconds": 3.38,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f39c5542994082a3e429",
+      "category": "multi_step",
+      "question": "What is the name of the independent candidate in Maine's 2010 gubernatorial race who finished ahead of Libby Mitchell?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Eliot Cutler",
+      "gold_answers": [
+        "Eliot Cutler"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 0.5,
+      "citation_precision": 0.5,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-c2cb0997e764d694",
+        "hp-7b92f796b6b7165d"
+      ],
+      "gold_docs": [
+        "hp-c2cb0997e764d694",
+        "hp-79dee8ae2a535487"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.36,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f4c45542994082a3e437",
+      "category": "multi_step",
+      "question": "Which Italian-American composer and librettist wrote the English language opera, Maria Golovin?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Gian Carlo Menotti",
+      "gold_answers": [
+        "Gian Carlo Menotti"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-eb7b99a557b536d8"
+      ],
+      "gold_docs": [
+        "hp-eb7b99a557b536d8",
+        "hp-ab4ef32cf9426048"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.88,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f6425542994082a3e44c",
+      "category": "multi_step",
+      "question": "Renamed in 2014, what was the vehicle offered as a prize to contestants on the first season of The Amazing Race Canada?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "Chevrolet Corvette Stingrays"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "hp-898ac9a00c9d991f",
+        "hp-63ce7f75c2c558fb"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.84,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "5a70ff335542994082a3e49c",
+      "category": "multi_step",
+      "question": "Which Indian actress who earned filmfare award for Best female debut in \"Refugee\" acted in K3G movie?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Kareena Kapoor",
+      "gold_answers": [
+        "Kareena Kapoor Khan"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.8,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-373c89f4762728e0"
+      ],
+      "gold_docs": [
+        "hp-373c89f4762728e0",
+        "hp-f753456bdf856f29"
+      ],
+      "llm_calls": 3,
+      "seconds": 3.41,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a71095e5542994082a3e4f3",
+      "category": "multi_step",
+      "question": "What is the name of Bruce Willis's character in Unbreakable?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "David Dunn",
+      "gold_answers": [
+        "David Dunn"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-1ec10460fb7fb2da"
+      ],
+      "gold_docs": [
+        "hp-7f7dcceb289e8023",
+        "hp-1ec10460fb7fb2da"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.83,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f0e75542994082a3e408",
+      "category": "multi_document",
+      "question": "Which of these universities, Northwestern University or Johns Hopkins University, have a campus outside of the United States territories?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Northwestern University",
+      "gold_answers": [
+        "with other campuses located in Chicago and Doha, Qatar"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 0.5,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-21e31fc423ef90fe"
+      ],
+      "gold_docs": [
+        "hp-ccdeb7b2959ec1c7",
+        "hp-21e31fc423ef90fe"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.2,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f11a5542994082a3e40b",
+      "category": "multi_document",
+      "question": "Which dog breed, the Schapendoes or the Bull Terrier, has its origins in a greater number of other dog breeds?",
+      "expected_status": "answered",
+      "status": "insufficient",
+      "answer": "",
+      "gold_answers": [
+        "Bull Terrier"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 1.0,
+      "citation_precision": null,
+      "citation_recall": 0.0,
+      "cited_docs": [],
+      "gold_docs": [
+        "hp-a7cc102e780ba298",
+        "hp-eb90a455c613ea68"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.93,
+      "error": "",
+      "warnings": [
+        "second-chance search skipped (LLMQuotaExhausted)"
+      ]
+    },
+    {
+      "qid": "5a70f4695542994082a3e435",
+      "category": "multi_document",
+      "question": "Which canal was built between 1836 and 1847, Washington City Canal or Whitewater Canal?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Whitewater Canal",
+      "gold_answers": [
+        "The Whitewater Canal"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-2846a4a8ba657ce5"
+      ],
+      "gold_docs": [
+        "hp-40d05c1b949f2c82",
+        "hp-2846a4a8ba657ce5"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.87,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a70f9335542994082a3e46a",
+      "category": "multi_document",
+      "question": "Which magazine is published more in a year, Essence or Alt for Damerne?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Alt for Damerne is published more in a year than Essence.",
+      "gold_answers": [
+        "ALT for Damerne"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.4615384615384615,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-7c0a52c29bb9c6a2",
+        "hp-3de9e4713d2ecec0"
+      ],
+      "gold_docs": [
+        "hp-7c0a52c29bb9c6a2",
+        "hp-3de9e4713d2ecec0"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.9,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7100435542994082a3e4a3",
+      "category": "multi_document",
+      "question": " Are Finding Kraftland and Shikashika both frozen drinks?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "No",
+      "gold_answers": [
+        "Shikashika is a shaved ice drink"
+      ],
+      "correct": false,
+      "em": 0.0,
+      "f1": 0.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-03851bd5cd014ca0",
+        "hp-70341b94bd954e06"
+      ],
+      "gold_docs": [
+        "hp-70341b94bd954e06",
+        "hp-03851bd5cd014ca0"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.07,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7103b35542994082a3e4c0",
+      "category": "multi_document",
+      "question": "Which mountain, Masherbrum or Khunyang Chhish, is a taller mountain?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Khunyang Chhish is taller than Masherbrum",
+      "gold_answers": [
+        "Khunyang Chhish"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.5,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-5d99abeaad9ce95c",
+        "hp-5d0f82337c9cba98"
+      ],
+      "gold_docs": [
+        "hp-5d0f82337c9cba98",
+        "hp-5d99abeaad9ce95c"
+      ],
+      "llm_calls": 2,
+      "seconds": 1.99,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a7108fa5542994082a3e4ef",
+      "category": "multi_document",
+      "question": "Which battle, the Battle of Cold Harbor, or the Second Battle of Bull Run, was fought first?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "The Second Battle of Bull Run was fought first.",
+      "gold_answers": [
+        "Second Battle of Bull Run"
+      ],
+      "correct": true,
+      "em": 0.0,
+      "f1": 0.7692307692307693,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 1.0,
+      "cited_docs": [
+        "hp-8841bb365d53cc32",
+        "hp-a30f6f5b749031da"
+      ],
+      "gold_docs": [
+        "hp-8841bb365d53cc32",
+        "hp-a30f6f5b749031da"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.55,
+      "error": "",
+      "warnings": []
+    },
+    {
+      "qid": "5a710a915542994082a3e504",
+      "category": "multi_document",
+      "question": "Which of these men, Scott Treleaven and Edmund Mortimer, is credited with working in both films and photography?",
+      "expected_status": "answered",
+      "status": "answered",
+      "answer": "Scott Treleaven",
+      "gold_answers": [
+        "Scott Treleaven"
+      ],
+      "correct": true,
+      "em": 1.0,
+      "f1": 1.0,
+      "evidence_recall": 1.0,
+      "citation_precision": 1.0,
+      "citation_recall": 0.5,
+      "cited_docs": [
+        "hp-da21e9905325bd4c"
+      ],
+      "gold_docs": [
+        "hp-da21e9905325bd4c",
+        "hp-7d5d0e73f3d617ae"
+      ],
+      "llm_calls": 2,
+      "seconds": 2.45,
       "error": "",
       "warnings": []
     }

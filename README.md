@@ -112,7 +112,7 @@ Retrieval, 500 HotpotQA questions (document-level relevance):
 | fixed + hybrid (RRF) | 0.717 | 0.781 | **0.832** |
 
 End to end, 46 questions, LLM `openai/gpt-oss-120b` on Groq (free tier). **Run 1** is the
-official comparison of the two configurations:
+baseline:
 
 | Configuration | Answer correctness | simple | multi-step | multi-doc | unanswerable | contradictory | Citation precision |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -121,10 +121,16 @@ official comparison of the two configurations:
 
 **Run 2** was made after fixing the failures found in run 1: a second chance to search before
 abstaining, reserved evidence slots for follow-up searches, and one rewritten synthetic conflict
-document (disclosed in the report). With sentence + hybrid it scores **0.804 (37/46)**:
-multi-step 0.40 → 0.70, contradictory 0.75 → 0.875, citation precision 0.974. 4 questions went
-from wrong to right and none from right to wrong. The fixed + semantic run stopped at 20/46 on the
-free daily token limit, so it is reported as partial.
+document (disclosed in the report):
+
+| Configuration | Answer correctness | simple | multi-step | multi-doc | unanswerable | contradictory | Citation precision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| sentence chunks + hybrid | **0.804** | 1.00 | **0.70** | 0.60 | 0.875 | 0.875 | **0.974** |
+| fixed chunks + semantic | 0.739 | 0.90 | 0.40 | **0.70** | 0.875 | 0.875 | 0.957 |
+
+No question went from right to wrong. The pipeline changes alone fixed 3 questions with hybrid
+retrieval but only 1 with semantic-only retrieval. A follow-up search usually names an exact
+entity (`CHG-0412`), and keyword search finds that where MiniLM often does not.
 
 Full tables, the 46-question bank, failure analysis by cause and limitations:
 [docs/evaluation-report.md](docs/evaluation-report.md).
@@ -187,8 +193,8 @@ Oracle Cloud Always Free (no Ampere capacity in the account's home region, Paris
 
 - The answer evaluation uses string matching, which under-counts answers that are correct but
   worded differently (5 cases are listed in the report).
-- Run 2 of the answer evaluation for fixed + semantic is partial (20/46) because of the free
-  LLM token limit. `python scripts/evaluate.py answers` resumes it.
+- 46 questions are a small sample (one question is about 2 points), and one LLM was evaluated.
+  A full answer run of both configurations takes about a day of the free Groq token quota.
 - MiniLM is a small embedding model, and BM25 beats it on this data. Exact identifiers such as
   `CHG-0412` are found by keyword search, not by semantic search.
 - Dotted identifiers are kept whole, so `pool` does not match `pool.max`.

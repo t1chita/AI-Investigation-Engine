@@ -17,25 +17,26 @@
     }
   },
   "fixed-semantic": {
-    "answer_correctness": 0.8,
-    "em_answerable": 0.42857142857142855,
-    "f1_answerable": 0.6366213151927438,
-    "evidence_recall": 0.8916666666666666,
-    "citation_precision": 0.9642857142857143,
-    "citation_recall_answerable": 0.7738095238095238,
+    "answer_correctness": 0.7391304347826086,
+    "em_answerable": 0.36666666666666664,
+    "f1_answerable": 0.5564183964183964,
+    "evidence_recall": 0.8659420289855073,
+    "citation_precision": 0.9571428571428572,
+    "citation_recall_answerable": 0.6444444444444444,
     "errors": 0,
-    "llm_calls": 52,
+    "llm_calls": 110,
     "by_category": {
       "simple": 0.9,
-      "multi_step": 0.0,
-      "multi_document": 1.0,
-      "unanswerable": 0.8333333333333334
+      "multi_step": 0.4,
+      "multi_document": 0.7,
+      "unanswerable": 0.875,
+      "contradictory": 0.875
     }
   },
   "usage": {
     "calls": 4,
-    "input_tokens": 3412,
-    "output_tokens": 1004,
+    "input_tokens": 2897,
+    "output_tokens": 1024,
     "retries": 0
   }
 }
